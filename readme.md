@@ -4,10 +4,10 @@
 </a>
 </div>
 <div align="center" >
-<h1>Instagram Live</h1>
+<h1>Fluent Commands</h1>
 
 
-❤️❤️🎁 *Connect to Instagram live in 3 lines* 🎁❤️❤️
+❤️ *No more difficult commands* ️❤️
 
 <div align="center" >
 <a href="https://www.nuget.org/packages/InstaLiveDotNet/" target="blank" >
@@ -26,12 +26,9 @@
 </div>
 
 # Introduction
-A C# library dedicated for connecting to Instagram live.
+A Spigot/Paper library dedicated for simple adding commands to your plugin.
 
-
-Join the support [discord](https://discord.gg/e2XwPNTBBr) and visit the `#instagram-support` channel for questions, contributions and ideas. Feel free to make pull requests with missing/new features, fixes, etc
-
-**NOTE:** This is not an official API. It's a reverse engineering project.
+Join the support [discord](https://discord.gg/2hu6fPPeF7) and visit the `#programming` channel for questions, contributions and ideas. Feel free to make pull requests with missing/new features, fixes, etc
 
 ## Getting started
 1. Install the package <a href="https://www.nuget.org/packages/InstaLiveDotNet/" target="blank" ><img src="https://img.shields.io/nuget/v/SoftCircuits.Silk.svg?style=flat-square" width="100px"  height="25px"></a>
@@ -42,54 +39,52 @@ Join the support [discord](https://discord.gg/e2XwPNTBBr) and visit the `#instag
 </br>
 
 2. Create your first chat connection
-```C#
+```java
 
-var client = InstagramLive
-    .NewClient()
-    .Configure(properties =>
-    {
-        //User credentials to login
-        properties.UserName = "username";
-        properties.Password = "********";
+public final class Example extends JavaPlugin {
 
-        //Or sessionId + deviceId
-        properties.SessionId = "session id";
-        properties.DeviceId = "device id    ";
-    })
-    .OnError((live, @event) =>
-    {
-        Console.WriteLine($"we have error { @event.Exception.Message}");
-    })
-    .OnConnected((live, @event) =>
-    {
-        Console.WriteLine("Connected to live");
-    })
-    .OnDisconnected((liveClient, data) =>
-    {
-        Console.WriteLine("OnDisconnected to live");
-    })
-    .OnJoin((liveClient, data) =>
-    {
-        Console.WriteLine("User joined to live "+data.ToJson());
-    })
-    .OnComment((live, @event) =>
-    {
-        Console.WriteLine("Comment "+@event.ToJson());
-    })
-    .OnSystemComment((liveClient,  @event) =>
-    {
-        Console.WriteLine("System Comment "+@event.ToJson());
-    })
-    .Build();
+    @Override
+    public void onEnable() {
+        CommandsApi commandsApi = CommandsFramework.enable(this);
 
+        commandsApi.create("hello-world")
+                //Properties
+                .withPermissions("use.hello.world")
+                .withDescription("This command say hello world to player")
 
+                //Arguments
+                .addTextArgument("name")
+                .addNumberArgument("number-of-people")
+                .addPlayerArgument("main-player")
 
+                //SubCommands
+                .addChildren(commandBuilder ->
+                {
+                    commandBuilder.withName("child");
+                    commandBuilder.onPlayerExecute((command, event) ->
+                    {
+                        event.sender().sendMessage("Hello from the sub command");
+                    });
+                })
 
-await client.Connect("jacolwol");
+                //Events
+                .onPlayerExecute((command, event) ->
+                {
+                    var sender = event.sender();
+                    var player = event.argumentPlayer(0);
+                    var size = event.argumentDouble(1);
+                })
+                .onServerExecute((command, event) ->
+                {
+                    event.sender().sendMessage("This command can be only use by players!");
+                })
+                .buildAndRegister();
+    }
+}
 ```
 
 ## Contributing
 
-[Library documentation for contributors](https://github.com/jwdeveloper/TikTokLiveJava/wiki)
+[Library documentation for contributors](https://github.com/jwdeveloper/FluentCommands)
 
-Your improvements are welcome! Feel free to open an <a href="https://github.com/jwdeveloper/TikTok-Live-Java/issues">issue</a> or <a href="https://github.com/jwdeveloper/TikTok-Live-Java/pulls">pull request</a>.
+Your improvements are welcome! Feel free to open an <a href="https://github.com/jwdeveloper/FluentCommands/issues">issue</a> or <a href="https://github.com/jwdeveloper/FluentCommands/pulls">pull request</a>.
