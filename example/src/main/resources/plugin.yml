@@ -1,0 +1,4 @@
+name: example
+version: '${project.version}'
+main: io.github.jw.spigot.mc.tiktok.example.Example
+api-version: '1.17'
