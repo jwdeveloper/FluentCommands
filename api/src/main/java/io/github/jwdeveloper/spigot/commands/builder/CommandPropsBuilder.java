@@ -1,6 +1,7 @@
 package io.github.jwdeveloper.spigot.commands.builder;
 
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
+import io.github.jwdeveloper.spigot.commands.data.SenderType;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -57,6 +58,22 @@ public interface CommandPropsBuilder<T> {
 
     default T withHideFromTab(boolean isHide) {
         properties().hideFromTabDisplay(isHide);
+        return self();
+    }
+
+    default T withIsActive(boolean isActive) {
+        properties().active(isActive);
+        return self();
+    }
+
+    /**
+     * Set the sender types that are disabled for command
+     *
+     * @param senderTypes one or more sender type
+     * @return builder
+     */
+    default T withDisabledSenders(SenderType... senderTypes) {
+        properties().disabledSenders().addAll(Arrays.stream(senderTypes).toList());
         return self();
     }
 

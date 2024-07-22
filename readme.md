@@ -28,7 +28,7 @@
 # Introduction
 A Spigot/Paper library dedicated for simple adding commands to your plugin.
 
-See the  [documentation](https://discord.gg/2hu6fPPeF7) to see more advanced examples! 
+See the [documentation](https://jwdeveloper.github.io/FluentCommands/) to see more advanced examples! 
 
 Join the support [discord](https://discord.gg/2hu6fPPeF7) and visit the `#programming` channel for questions, contributions and ideas. Feel free to make pull requests with missing/new features, fixes, etc
 
@@ -78,9 +78,6 @@ public final class Example extends JavaPlugin {
 3. Call the command in game!
 
 `/hello-world john 12 Steave`
-
-
-
 
 
 ## Contributing

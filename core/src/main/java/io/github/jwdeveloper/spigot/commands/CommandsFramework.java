@@ -7,6 +7,7 @@ import io.github.jwdeveloper.spigot.commands.listeners.DisableCommandsApiListene
 import io.github.jwdeveloper.spigot.commands.services.CommandServices;
 import io.github.jwdeveloper.spigot.commands.services.ExecuteService;
 import org.bukkit.Bukkit;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.util.function.Consumer;
@@ -20,14 +21,13 @@ public class CommandsFramework {
     }
 
     public static CommandsApi enable(Plugin plugin) {
-        return enable(plugin, x -> {
-        });
+        return enable(plugin, x -> {});
     }
 
     public static CommandsApi enable(Plugin plugin, Consumer<DependanceContainerBuilder> action) {
 
         if (isEnabled()) {
-            throw new RuntimeException("Fluent commands has already been initialized");
+            throw new RuntimeException("Fluent commands has already been enabled");
         }
 
         var builder = Dependance.newContainer();
@@ -38,8 +38,6 @@ public class CommandsFramework {
         builder.registerSingleton(DisableCommandsApiListener.class);
         builder.registerTransient(CommandServices.class);
         builder.registerTransient(ExecuteService.class);
-        builder.registerTransient(TabService.class);
-
 
         action.accept(builder);
 
@@ -52,12 +50,19 @@ public class CommandsFramework {
 
     public static CommandsApi api() {
         if (!isEnabled()) {
-            throw new RuntimeException("Fluent commands has not been initialized");
+            throw new RuntimeException("Fluent commands has not been enabled");
         }
         return container.find(CommandsApi.class);
     }
 
     public static void disable() {
+        if (!isEnabled()) {
+            throw new RuntimeException("Fluent commands has not been enabled");
+        }
 
+        var listener = container.find(DisableCommandsApiListener.class);
+        PluginDisableEvent.getHandlerList().unregister(listener);
+
+        api().removeAll();
     }
 }

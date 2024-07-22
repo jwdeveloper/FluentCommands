@@ -1,5 +1,6 @@
 package io.github.jwdeveloper.spigot.commands.services;
 
+import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
@@ -9,19 +10,22 @@ import java.util.List;
 
 public class ExecuteService {
 
-    private final PermissionsService permissionsService;
+    private final ValidationService validationService;
     private final MessagesService messagesService;
     private final ArgumentsService argumentsService;
     private final EventsService eventsService;
+    private final DependanceContainer container;
 
-    public ExecuteService(PermissionsService permissionsService,
+    public ExecuteService(ValidationService validationService,
                           MessagesService messagesService,
                           ArgumentsService argumentsService,
-                          EventsService eventsService) {
-        this.permissionsService = permissionsService;
+                          EventsService eventsService,
+                          DependanceContainer container) {
+        this.validationService = validationService;
         this.messagesService = messagesService;
         this.argumentsService = argumentsService;
         this.eventsService = eventsService;
+        this.container = container;
     }
 
     /**
@@ -41,11 +45,12 @@ public class ExecuteService {
             return ActionResult.failed(command, messagesService.inactiveCommand(command.name()));
         }
 
-     /*   if (!commandService.hasSenderAccess(sender, command.properties().getCommandAccesses())) {
-            return ActionResult.failed(command,messagesService.noAccess(sender));
-        }*/
+        var accessResult = validationService.isSenderEnabled(sender, command.properties().disabledSenders());
+        if (accessResult.isFailed()) {
+            return ActionResult.failed(command, messagesService.noSenderAccess(accessResult.getMessage()));
+        }
 
-        var permissionResult = permissionsService.hasSenderPermissions(sender, command.properties().permissions());
+        var permissionResult = validationService.hasSenderPermissions(sender, command.properties().permissions());
         if (permissionResult.isFailed()) {
             return ActionResult.failed(command, messagesService.insufficientPermissions(permissionResult.getMessage()));
         }
@@ -55,13 +60,18 @@ public class ExecuteService {
             return ActionResult.failed(command, messagesService.invalidArgument(argumentsResult.getMessage()));
         }
 
-        var event = new CommandEvent(sender, commandArguments, allArguments, argumentsResult.getObject());
-        var eventResult = eventsService.invoke(event);
+        var event = new CommandEvent(
+                sender,
+                commandArguments,
+                allArguments,
+                argumentsResult.getObject(),
+                container);
+        var eventResult = eventsService.invoke(command, event);
         return ActionResult.cast(eventResult, command);
     }
 
 
-
     public ActionResult<List<String>> executeTab(Command command, CommandSender sender, String alias, String[] arguments) {
+        return ActionResult.success(List.of());
     }
 }

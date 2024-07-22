@@ -7,7 +7,6 @@ import io.github.jwdeveloper.spigot.commands.FluentCommand;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
-import io.github.jwdeveloper.spigot.commands.events.CommandEventsImpl;
 import io.github.jwdeveloper.spigot.commands.functions.CommandEventAction;
 import io.github.jwdeveloper.spigot.commands.services.CommandServices;
 import io.github.jwdeveloper.spigot.commands.services.EventsService;
@@ -17,7 +16,6 @@ import lombok.experimental.Accessors;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 @Accessors(fluent = true)
 public class CommandsBuilderImpl implements CommandBuilder {
@@ -52,8 +50,8 @@ public class CommandsBuilderImpl implements CommandBuilder {
     }
 
     @Override
-    public CommandBuilder onEvent(CommandEventAction<?> action) {
-        commandEvents.subscribe(action);
+    public CommandBuilder onEvent(Class<?> senderType, CommandEventAction<?> action) {
+        commandEvents.subscribe(senderType, action);
         return self();
     }
 

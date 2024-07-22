@@ -3,13 +3,14 @@ package io.github.jw.spigot.mc.tiktok.example;
 
 import io.github.jwdeveloper.spigot.commands.CommandsApi;
 import io.github.jwdeveloper.spigot.commands.CommandsFramework;
+import io.github.jwdeveloper.spigot.commands.data.SenderType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Example extends JavaPlugin {
 
     @Override
     public void onEnable() {
-     CommandsApi commandsApi = CommandsFramework.enable(this);
+        CommandsApi commandsApi = CommandsFramework.enable(this);
 
         commandsApi.create("hello-world")
                 //Properties
@@ -38,7 +39,11 @@ public final class Example extends JavaPlugin {
                     var player = event.argumentPlayer(0);
                     var size = event.argumentDouble(1);
                 })
-                .onServerExecute((command, event) ->
+                .onBlockExecute((command, event) ->
+                {
+
+                })
+                .onConsoleExecute((command, event) ->
                 {
                     event.sender().sendMessage("This command can be only use by players!");
                 })

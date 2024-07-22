@@ -1,7 +1,6 @@
 package io.github.jwdeveloper.spigot.commands.data;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
@@ -14,6 +13,8 @@ public class CommandProperties {
     private Map<String, Object> customProperties;
 
     private String name;
+
+    private List<SenderType> disabledSenders;
 
     private String shortDescription = "";
 
