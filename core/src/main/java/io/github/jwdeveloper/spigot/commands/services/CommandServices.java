@@ -77,28 +77,4 @@ public class CommandServices {
         //test one two three -> three is not child
         return new CommandTarget(command, args);
     }
-
-    public CommandTarget targetedCommandOld(Command command, String[] args) {
-        if (args.length == 0 || command.children().isEmpty()) {
-            return new CommandTarget(command, args);
-        }
-        var arguments = command.arguments();
-        var subCommandIndex = arguments.size() + 1;
-
-        if (subCommandIndex > args.length) {
-            return new CommandTarget(command, args);
-        }
-
-        var subCommandName = args[subCommandIndex - 1];
-        var subCommandOptional = command.children()
-                .stream()
-                .filter(c -> c.name().equalsIgnoreCase(subCommandName))
-                .findFirst();
-
-        if (subCommandOptional.isEmpty()) {
-            return new CommandTarget(command, args);
-        }
-        var subCommandArgs = Arrays.copyOfRange(args, subCommandIndex, args.length);
-        return targetedCommand(subCommandOptional.get(), subCommandArgs);
-    }
 }

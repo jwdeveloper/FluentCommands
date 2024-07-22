@@ -17,16 +17,16 @@ public class ArgumentsService {
             String[] args,
             List<ArgumentProperties> arguments) {
 
-        if (arguments.isEmpty()) {
-            return ActionResult.success(new ArgumentsResult(List.of()));
-        }
-
         var parsedArguments = new ArrayList<>();
-        for (int i = 0; i < arguments.size(); i++) {
-            var arg = i < args.length ? args[i] : "";
+        for (int i = 0; i < args.length; i++) {
+            var arg = args[i];
+            if(arguments.size() < args.length)
+            {
+                parsedArguments.add(arg);
+                continue;
+            }
+
             var argument = arguments.get(i);
-
-
             var event = new ArgumentEvent();
             event.previousValue(arg);
             event.argument(argument);
@@ -37,9 +37,9 @@ public class ArgumentsService {
             event.index(i);
 
             Object output = null;
-            for (var validator : argument.parsers()) {
+            for (var parser : argument.parsers()) {
                 try {
-                    var result = validator.parse(event);
+                    var result = parser.parse(event);
                     if (result.isFailed()) {
                         return ActionResult.failed(result.getMessage());
                     }

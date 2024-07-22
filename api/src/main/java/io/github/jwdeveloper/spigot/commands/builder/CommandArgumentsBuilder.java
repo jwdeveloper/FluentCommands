@@ -4,6 +4,8 @@ import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentType;
 
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public interface CommandArgumentsBuilder<T> {
 
@@ -46,6 +48,28 @@ public interface CommandArgumentsBuilder<T> {
 
     default T addTextArgument(String argumentName, Consumer<ArgumentBuilder> action) {
         return addArgument(argumentName, ArgumentType.TEXT, action);
+    }
+
+
+    default T addEnumArgument(Class<? extends Enum> type, String name, Consumer<ArgumentBuilder> action) {
+        return addArgument(name, ArgumentType.CUSTOM, argumentBuilder ->
+        {
+            var enumValues = Stream.of(type.getEnumConstants())
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
+            argumentBuilder.withSuggestions(enumValues);
+            argumentBuilder.withParser(argumentEvent -> Enum.valueOf(type, argumentEvent.arg()));
+            action.accept(argumentBuilder);
+        });
+    }
+
+    default T addEnumArgument(Class<? extends Enum> type, Consumer<ArgumentBuilder> action) {
+        return addEnumArgument(type, type.getSimpleName(), action);
+    }
+
+    default T addEnumArgument(Class<? extends Enum> type) {
+        return addEnumArgument(type, type.getSimpleName(), x -> {
+        });
     }
 
     default T addBoolArgument(String argumentName) {

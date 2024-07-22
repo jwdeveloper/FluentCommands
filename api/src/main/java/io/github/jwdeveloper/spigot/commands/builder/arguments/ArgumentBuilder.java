@@ -8,8 +8,10 @@ import io.github.jwdeveloper.spigot.commands.data.argumetns.parsing.ArgumentEven
 import io.github.jwdeveloper.spigot.commands.data.argumetns.parsing.ArgumentParser;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface ArgumentBuilder {
 
@@ -34,6 +36,18 @@ public interface ArgumentBuilder {
 
     default ArgumentBuilder withDisplayMode(ArgumentDisplay displayMode) {
         return withProperty(e -> e.displayMode(displayMode));
+    }
+
+    default ArgumentBuilder withSuggestions(Function<String, List<String>> suggestions) {
+        return withProperty(e -> e.suggestions(suggestions));
+    }
+
+    default ArgumentBuilder withSuggestions(String... suggestions) {
+        return withSuggestions((e) -> List.of(suggestions));
+    }
+
+    default ArgumentBuilder withSuggestions(List<String> suggestions) {
+        return withSuggestions((e) -> suggestions);
     }
 
     default ArgumentBuilder withParserResult(ArgumentParser parser) {

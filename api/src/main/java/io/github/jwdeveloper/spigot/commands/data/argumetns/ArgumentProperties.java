@@ -6,6 +6,8 @@ import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Data
 @Accessors(fluent = true)
@@ -18,4 +20,5 @@ public class ArgumentProperties {
     private boolean required;
     private Object defaultValue;
     private String description;
+    private Function<String, List<String>> suggestions;
 }

@@ -76,6 +76,10 @@ public class CommandEvent<T extends CommandSender> {
         return argument(argument, Double.class);
     }
 
+    public <T extends Enum<?>> T getEnum(int argument, Class<? extends T> type) {
+        return argument(argument, type);
+    }
+
     public Player getPlayer(int argument) {
         return argument(argument, Player.class);
     }

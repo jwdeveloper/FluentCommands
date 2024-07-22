@@ -71,7 +71,32 @@ public class ExecuteService {
     }
 
 
-    public ActionResult<List<String>> executeTab(Command command, CommandSender sender, String alias, String[] arguments) {
-        return ActionResult.success(List.of());
+    public List<String> executeTab(Command command,
+                                   CommandSender sender,
+                                   String alias,
+                                   String[] commandsArgs,
+                                   String[] allArgs) {
+        var arguments = command.arguments();
+        var children = command.children();
+
+        if (arguments.isEmpty()) {
+            return children.stream()
+                    .filter(e -> !e.properties().hideFromTabDisplay())
+                    .map(Command::name)
+                    .toList();
+        }
+
+        var argumentIndex = commandsArgs.length - 1;
+        if (arguments.size() - 1 < argumentIndex) {
+            return List.of();
+        }
+
+        var args = commandsArgs[argumentIndex];
+        var argument = arguments.get(argumentIndex);
+        return switch (argument.displayMode()) {
+            case NAME -> List.of(argument.name());
+            case TYPE -> List.of("<" + argument.type().name().toLowerCase() + ">");
+            case SUGGESTIONS -> argument.suggestions().apply(args);
+        };
     }
 }

@@ -67,17 +67,14 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
     @Override
     public ActionResult<List<String>> executeTab(CommandSender sender, String alias, String... arguments) {
         var target = services.targetedCommand(this, arguments);
-        var result = services.executeService().executeTab(target.getCommand(), sender, alias, arguments);
-        if (result.isFailed()) {
-            sender.sendMessage(result.getMessage());
-        }
-        return result;
+        var result = services.executeService().executeTab(target.getCommand(), sender, alias, target.getArguments(), arguments);
+        return ActionResult.success(result);
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] arguments) {
         var result = executeTab(sender, alias, arguments);
-        if (result.isSuccess()) {
+        if (result.isFailed()) {
             return Collections.emptyList();
         }
         return result.getObject();
