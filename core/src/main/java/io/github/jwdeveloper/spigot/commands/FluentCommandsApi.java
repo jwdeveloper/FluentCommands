@@ -24,6 +24,16 @@ public class FluentCommandsApi implements CommandsApi {
     }
 
     @Override
+    public CommandBuilder create(Object templateObject) {
+        return null;
+    }
+
+    @Override
+    public CommandBuilder create(Class<?> templateType) {
+        return null;
+    }
+
+    @Override
     public CommandBuilder create() {
         return container.find(CommandBuilder.class);
     }

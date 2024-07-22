@@ -10,6 +10,10 @@ import java.util.stream.Stream;
 public interface CommandsApi {
     CommandBuilder create(String commandName);
 
+    CommandBuilder create(Object templateObject);
+
+    CommandBuilder create(Class<?> templateType);
+
     CommandBuilder create();
 
     void add(Command command);

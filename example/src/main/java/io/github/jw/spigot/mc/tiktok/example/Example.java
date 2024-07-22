@@ -20,20 +20,12 @@ public final class Example extends JavaPlugin {
     @Override
     public void onEnable() {
         CommandsApi commandsApi = CommandsFramework.enable(this);
-
-
-        var fakePlayers = new ArrayList<String>();
-        for (var i = 0; i < 100; i++) {
-            fakePlayers.add(i + " player ");
-        }
-
         commandsApi.create("test")
                 .addPlayerArgument("main-player")
                 .addTextArgument("option", argumentBuilder ->
                 {
                     argumentBuilder.withSuggestions("Kick", "Join", "Move");
                 })
-
                 .addNumberArgument("x", argumentBuilder ->
                 {
                     argumentBuilder.withSuggestions("0.1", "x", "copy");
