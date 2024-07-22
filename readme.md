@@ -28,6 +28,8 @@
 # Introduction
 A Spigot/Paper library dedicated for simple adding commands to your plugin.
 
+See the  [documentation](https://discord.gg/2hu6fPPeF7) to see more advanced examples! 
+
 Join the support [discord](https://discord.gg/2hu6fPPeF7) and visit the `#programming` channel for questions, contributions and ideas. Feel free to make pull requests with missing/new features, fixes, etc
 
 ## Getting started
@@ -38,7 +40,7 @@ Join the support [discord](https://discord.gg/2hu6fPPeF7) and visit the `#progra
 <br>
 </br>
 
-2. Create your first chat connection
+2. Create your first command
 ```java
 
 public final class Example extends JavaPlugin {
@@ -53,19 +55,9 @@ public final class Example extends JavaPlugin {
                 .withDescription("This command say hello world to player")
 
                 //Arguments
-                .addTextArgument("name")
+                .addTextArgument("animal")
                 .addNumberArgument("number-of-people")
                 .addPlayerArgument("main-player")
-
-                //SubCommands
-                .addChildren(commandBuilder ->
-                {
-                    commandBuilder.withName("child");
-                    commandBuilder.onPlayerExecute((command, event) ->
-                    {
-                        event.sender().sendMessage("Hello from the sub command");
-                    });
-                })
 
                 //Events
                 .onPlayerExecute((command, event) ->
@@ -82,6 +74,14 @@ public final class Example extends JavaPlugin {
     }
 }
 ```
+
+3. Call the command in game!
+
+`/hello-world john 12 Steave`
+
+
+
+
 
 ## Contributing
 
