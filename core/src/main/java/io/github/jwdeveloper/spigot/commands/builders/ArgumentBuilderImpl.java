@@ -1,26 +1,37 @@
 package io.github.jwdeveloper.spigot.commands.builders;
 
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
+import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentProperties;
-import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentType;
+import io.github.jwdeveloper.spigot.commands.data.argumetns.parsing.ArgumentEvent;
+import org.bukkit.Bukkit;
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.function.Consumer;
 
 public class ArgumentBuilderImpl implements ArgumentBuilder {
-    @Override
-    public ArgumentBuilder withIndex(int index) {
-        return null;
+
+    private final ArgumentProperties properties;
+
+    public ArgumentBuilderImpl(ArgumentProperties properties) {
+        this.properties = properties;
     }
 
     @Override
-    public ArgumentBuilder withArgumentName(String name) {
-        return null;
+    public ArgumentBuilder withProperty(Consumer<ArgumentProperties> action) {
+        action.accept(properties);
+        return this;
     }
 
-    @Override
-    public ArgumentBuilder withType(ArgumentType argumentType) {
-        return null;
-    }
-
-    public ArgumentProperties build() {
-        return new ArgumentProperties();
+    public ArgumentProperties build()
+    {
+        switch (properties.type()) {
+            case TEXT -> withParser(ArgumentEvent::arg);
+            case INT -> withParser(argumentEvent -> Integer.parseInt(argumentEvent.arg()));
+            case FLOAT, NUMBER -> withParser(argumentEvent -> Float.parseFloat(argumentEvent.arg()));
+            case PLAYER -> withParser(argumentEvent -> Bukkit.getPlayer(argumentEvent.arg()));
+            case BOOL -> withParser(argumentEvent -> Boolean.parseBoolean(argumentEvent.arg()));
+        }
+        return properties;
     }
 }

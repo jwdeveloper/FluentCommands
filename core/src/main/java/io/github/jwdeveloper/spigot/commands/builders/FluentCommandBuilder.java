@@ -7,32 +7,32 @@ import io.github.jwdeveloper.spigot.commands.FluentCommand;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
+import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentProperties;
 import io.github.jwdeveloper.spigot.commands.functions.CommandEventAction;
-import io.github.jwdeveloper.spigot.commands.services.CommandServices;
-import io.github.jwdeveloper.spigot.commands.services.EventsService;
+import io.github.jwdeveloper.spigot.commands.services.*;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 @Accessors(fluent = true)
-public class CommandsBuilderImpl implements CommandBuilder {
+public class FluentCommandBuilder implements CommandBuilder {
 
     @Getter
     private CommandProperties properties;
-    private final EventsService commandEvents;
-    private final Set<Consumer<ArgumentBuilder>> argumentBuilders;
-    private final Set<CommandBuilder> childrenBuilders;
+    private final EventsService eventsService;
+    private final List<Consumer<ArgumentBuilder>> argumentBuilders;
+    private final List<CommandBuilder> childrenBuilders;
     private final CommandsRegistry registry;
     private final DependanceContainer container;
 
-    public CommandsBuilderImpl(CommandsRegistry registry, DependanceContainer container) {
+    public FluentCommandBuilder(CommandsRegistry registry, DependanceContainer container) {
         this.properties = new CommandProperties();
-        this.argumentBuilders = new HashSet<>();
-        this.commandEvents = new EventsService();
-        this.childrenBuilders = new HashSet<>();
+        this.argumentBuilders = new ArrayList<>();
+        this.eventsService = new EventsService();
+        this.childrenBuilders = new ArrayList<>();
         this.container = container;
         this.registry = registry;
     }
@@ -51,34 +51,44 @@ public class CommandsBuilderImpl implements CommandBuilder {
 
     @Override
     public CommandBuilder onEvent(Class<?> senderType, CommandEventAction<?> action) {
-        commandEvents.subscribe(senderType, action);
+        eventsService.subscribe(senderType, action);
         return self();
     }
 
     @Override
     public Command build() {
 
-        var arguments = argumentBuilders.stream().map(e ->
-        {
-            var builder = new ArgumentBuilderImpl();
-            e.accept(builder);
-            return builder.build();
-        }).toList();
+        var counter = 0;
+        var arguments = new ArrayList<ArgumentProperties>();
+        for (var argumentBuilder : argumentBuilders) {
+            var builder = new ArgumentBuilderImpl(new ArgumentProperties());
+            argumentBuilder.accept(builder);
+            var argument = builder.build();
+            argument.index(counter++);
+
+            arguments.add(argument);
+        }
+
         var children = childrenBuilders.stream()
                 .map(CommandBuilder::build)
                 .toList();
 
-        var services = container.find(CommandServices.class);
-
-        var command = new FluentCommand(
-                properties,
-                arguments,
-                children,
-                services);
-
         var commandContainer = container.createChildContainer()
-                .registerSingleton(Command.class, command)
-                .registerSingleton(EventsService.class, command)
+                .registerSingleton(EventsService.class, eventsService)
+                .registerSingleton(CommandServices.class)
+                .registerSingleton(ValidationService.class)
+                .registerSingleton(ExecuteService.class)
+                .registerSingleton(MessagesService.class)
+                .registerSingleton(ArgumentsService.class)
+                .registerSingleton(Command.class, con ->
+                {
+                    var services = (CommandServices) con.find(CommandServices.class);
+                    return new FluentCommand(
+                            properties,
+                            arguments,
+                            children,
+                            services);
+                })
                 .build();
 
         return commandContainer.find(Command.class);
@@ -105,14 +115,14 @@ public class CommandsBuilderImpl implements CommandBuilder {
     }
 
     @Override
-    public CommandBuilder addChildren(Consumer<CommandBuilder> builderConsumer) {
-        var builder = addChildren();
+    public CommandBuilder addSubCommand(Consumer<CommandBuilder> builderConsumer) {
+        var builder = addSubCommand();
         builderConsumer.accept(builder);
         return this;
     }
 
     @Override
-    public CommandBuilder addChildren() {
+    public CommandBuilder addSubCommand() {
         var builder = container.find(CommandBuilder.class);
         childrenBuilders.add(builder);
         return builder;

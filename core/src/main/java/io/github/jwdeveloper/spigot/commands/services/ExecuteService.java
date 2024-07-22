@@ -36,28 +36,28 @@ public class ExecuteService {
      * @param allArguments     all arguments that was sent by sender
      * @return result determining if command was successful
      */
-    public ActionResult<Command> execute(Command command,
-                                         CommandSender sender,
-                                         String commandLabel,
-                                         String[] commandArguments,
-                                         String[] allArguments) {
+    public ActionResult<CommandEvent> execute(Command command,
+                                              CommandSender sender,
+                                              String commandLabel,
+                                              String[] commandArguments,
+                                              String[] allArguments) {
         if (!command.properties().active()) {
-            return ActionResult.failed(command, messagesService.inactiveCommand(command.name()));
+            return ActionResult.failed(messagesService.inactiveCommand(command.name()));
         }
 
-        var accessResult = validationService.isSenderEnabled(sender, command.properties().disabledSenders());
+        var accessResult = validationService.isSenderEnabled(sender, command.properties().excludedSenders());
         if (accessResult.isFailed()) {
-            return ActionResult.failed(command, messagesService.noSenderAccess(accessResult.getMessage()));
+            return ActionResult.failed(messagesService.noSenderAccess(accessResult.getMessage()));
         }
 
         var permissionResult = validationService.hasSenderPermissions(sender, command.properties().permissions());
         if (permissionResult.isFailed()) {
-            return ActionResult.failed(command, messagesService.insufficientPermissions(permissionResult.getMessage()));
+            return ActionResult.failed(messagesService.insufficientPermissions(permissionResult.getMessage()));
         }
 
-        var argumentsResult = argumentsService.parseArguments(sender, commandArguments, command.arguments());
+        var argumentsResult = argumentsService.parseArguments(command, sender, commandArguments, command.arguments());
         if (argumentsResult.isFailed()) {
-            return ActionResult.failed(command, messagesService.invalidArgument(argumentsResult.getMessage()));
+            return ActionResult.failed(messagesService.invalidArgument(argumentsResult.getMessage()));
         }
 
         var event = new CommandEvent(
@@ -65,9 +65,9 @@ public class ExecuteService {
                 commandArguments,
                 allArguments,
                 argumentsResult.getObject(),
-                container);
-        var eventResult = eventsService.invoke(command, event);
-        return ActionResult.cast(eventResult, command);
+                container,
+                command);
+        return eventsService.invoke(command, event);
     }
 
 

@@ -26,7 +26,7 @@ public interface CommandArgumentsBuilder<T> {
     default T addArgument(String name, ArgumentType argumentType, Consumer<ArgumentBuilder> action) {
         return addArgument(argumentBuilder ->
         {
-            argumentBuilder.withArgumentName(name);
+            argumentBuilder.withName(name);
             argumentBuilder.withType(argumentType);
             action.accept(argumentBuilder);
         });

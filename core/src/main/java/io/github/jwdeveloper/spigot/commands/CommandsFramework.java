@@ -3,9 +3,10 @@ package io.github.jwdeveloper.spigot.commands;
 import io.github.jwdeveloper.dependance.Dependance;
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.dependance.implementation.DependanceContainerBuilder;
+import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
+import io.github.jwdeveloper.spigot.commands.builders.FluentCommandBuilder;
 import io.github.jwdeveloper.spigot.commands.listeners.DisableCommandsApiListener;
-import io.github.jwdeveloper.spigot.commands.services.CommandServices;
-import io.github.jwdeveloper.spigot.commands.services.ExecuteService;
+import io.github.jwdeveloper.spigot.commands.services.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
@@ -21,7 +22,8 @@ public class CommandsFramework {
     }
 
     public static CommandsApi enable(Plugin plugin) {
-        return enable(plugin, x -> {});
+        return enable(plugin, x -> {
+        });
     }
 
     public static CommandsApi enable(Plugin plugin, Consumer<DependanceContainerBuilder> action) {
@@ -34,10 +36,12 @@ public class CommandsFramework {
         builder.registerSingleton(Plugin.class, plugin);
         builder.registerSingleton(CommandsApi.class, FluentCommandsApi.class);
         builder.registerSingleton(CommandsRegistry.class, FluentCommandsRegistry.class);
+        builder.registerTransient(CommandBuilder.class, FluentCommandBuilder.class);
+
+
 
         builder.registerSingleton(DisableCommandsApiListener.class);
-        builder.registerTransient(CommandServices.class);
-        builder.registerTransient(ExecuteService.class);
+
 
         action.accept(builder);
 

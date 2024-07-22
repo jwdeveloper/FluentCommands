@@ -31,7 +31,6 @@ public class ValidationService {
                 case PROXY -> sender instanceof ProxiedCommandSender;
                 case BLOCK -> sender instanceof BlockCommandSender;
                 case REMOTE_CONSOLE -> sender instanceof RemoteConsoleCommandSender;
-                default -> false;
             };
             if (isDisabled) {
                 return ActionResult.failed(accessType.name());

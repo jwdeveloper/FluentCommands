@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="example:jar">
+    <output-path>D:/MC/spigot_1_20_6/plugins</output-path>
+    <root id="archive" name="example.jar">
+      <element id="module-output" name="example" />
+      <element id="module-output" name="api" />
+      <element id="module-output" name="core" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/jwdeveloper/DepenDance/Injector/0.0.18-Release/Injector-0.0.18-Release.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/jwdeveloper/DepenDance/Decorator/0.0.18-Release/Decorator-0.0.18-Release.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/jwdeveloper/DepenDance/DepenDance-Full/0.0.18-Release/DepenDance-Full-0.0.18-Release.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

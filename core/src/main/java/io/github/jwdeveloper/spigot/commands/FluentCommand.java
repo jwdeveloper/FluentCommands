@@ -1,16 +1,19 @@
 package io.github.jwdeveloper.spigot.commands;
 
+import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
 import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentProperties;
+import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
 import io.github.jwdeveloper.spigot.commands.services.CommandServices;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.checkerframework.checker.units.qual.C;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Accessors(fluent = true)
@@ -19,6 +22,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
     private final CommandProperties properties;
     private final List<ArgumentProperties> arguments;
     private final List<Command> children;
+    private final Map<String, Command> childrenByName;
     private final CommandServices services;
 
     @Setter
@@ -31,26 +35,50 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
         super(properties.name());
         this.properties = properties;
         this.arguments = argumentProperties;
-        this.children = children;
         this.services = services;
+        this.children = children;
+        this.childrenByName = children.stream().collect(Collectors.toMap(Command::name, e -> e));
     }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] arguments) {
+        return executeCommand(sender, commandLabel, arguments).isSuccess();
+    }
+
+    @Override
+    public boolean hasChild(String name) {
+        return childrenByName.containsKey(name);
+    }
+
+    @Override
+    public Optional<Command> child(String name) {
+        return Optional.ofNullable(childrenByName.get(name));
+    }
+
+    public ActionResult<CommandEvent> executeCommand(CommandSender sender, String commandLabel, String[] arguments) {
         var target = services.targetedCommand(this, arguments);
         var result = services.executeService().execute(target.getCommand(), sender, commandLabel, target.getArguments(), arguments);
         if (result.isFailed()) {
             sender.sendMessage(result.getMessage());
         }
-        return result.isSuccess();
+        return result;
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] arguments) {
+    public ActionResult<List<String>> executeTab(CommandSender sender, String alias, String... arguments) {
         var target = services.targetedCommand(this, arguments);
         var result = services.executeService().executeTab(target.getCommand(), sender, alias, arguments);
         if (result.isFailed()) {
             sender.sendMessage(result.getMessage());
+        }
+        return result;
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] arguments) {
+        var result = executeTab(sender, alias, arguments);
+        if (result.isSuccess()) {
+            return Collections.emptyList();
         }
         return result.getObject();
     }

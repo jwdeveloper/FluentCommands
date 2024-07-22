@@ -72,8 +72,8 @@ public interface CommandPropsBuilder<T> {
      * @param senderTypes one or more sender type
      * @return builder
      */
-    default T withDisabledSenders(SenderType... senderTypes) {
-        properties().disabledSenders().addAll(Arrays.stream(senderTypes).toList());
+    default T withExcludedSenders(SenderType... senderTypes) {
+        properties().excludedSenders().addAll(Arrays.stream(senderTypes).toList());
         return self();
     }
 

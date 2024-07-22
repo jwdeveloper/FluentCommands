@@ -1,5 +1,8 @@
 package io.github.jwdeveloper.spigot.commands;
+
+import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -8,21 +11,21 @@ import java.util.stream.Stream;
 
 public class FluentCommandsApi implements CommandsApi {
     private final CommandsRegistry commandsRegistry;
-    private final Supplier<CommandBuilder> builderSupplier;
+    private final DependanceContainer container;
 
-    public FluentCommandsApi(CommandsRegistry commandsRegistry, Supplier<CommandBuilder> builderSupplier) {
+    public FluentCommandsApi(CommandsRegistry commandsRegistry, DependanceContainer container) {
         this.commandsRegistry = commandsRegistry;
-        this.builderSupplier = builderSupplier;
+        this.container = container;
     }
 
     @Override
     public CommandBuilder create(String commandName) {
-        return null;
+        return create().withName(commandName);
     }
 
     @Override
     public CommandBuilder create() {
-        return builderSupplier.get();
+        return container.find(CommandBuilder.class);
     }
 
     @Override

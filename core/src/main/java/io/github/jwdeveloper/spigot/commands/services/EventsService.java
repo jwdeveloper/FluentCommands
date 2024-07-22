@@ -4,10 +4,12 @@ import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
 import io.github.jwdeveloper.spigot.commands.functions.CommandEventAction;
+import lombok.Getter;
 import org.bukkit.command.CommandSender;
 
 import java.util.*;
 
+@Getter
 public class EventsService {
 
     private final Map<Class<?>, Set<CommandEventAction>> eventsMap;
@@ -18,15 +20,24 @@ public class EventsService {
 
     public ActionResult<CommandEvent> invoke(Command command, CommandEvent event) {
 
-        var result = executeAction(CommandSender.class, command, event);
-        if (result.isFailed()) {
-            return result;
+        for (var keyType : eventsMap.keySet()) {
+            var senderType = event.sender().getClass();
+            if (!keyType.isAssignableFrom(senderType)) {
+                continue;
+            }
+            var result = executeAction(keyType, command, event);
+            if (result.isFailed()) {
+                return result;
+            }
         }
-        return executeAction(event.sender().getClass(), command, event);
+
+        return ActionResult.success(event);
     }
 
 
     private ActionResult<CommandEvent> executeAction(Class<?> senderType, Command command, CommandEvent event) {
+
+
         var actions = eventsMap.get(senderType);
         if (actions == null || actions.isEmpty()) {
             return ActionResult.success(event);
@@ -38,6 +49,7 @@ public class EventsService {
                 return ActionResult.failed(event, "An error occurred while executing actions: " + e.getMessage());
             }
         }
+        return ActionResult.success();
     }
 
     public void subscribe(Class<?> senderType, CommandEventAction<?> action) {

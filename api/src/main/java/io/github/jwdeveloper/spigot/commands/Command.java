@@ -1,7 +1,9 @@
 package io.github.jwdeveloper.spigot.commands;
 
+import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
 import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentProperties;
+import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
@@ -14,11 +16,16 @@ public interface Command {
 
     List<Command> children();
 
-    boolean execute(CommandSender sender, String commandLabel, String... arguments);
+    boolean hasChild(String name);
 
-    List<String> tabComplete(CommandSender sender, String alias, String... args);
+    Optional<Command> child(String name);
+
+    ActionResult<CommandEvent> executeCommand(CommandSender sender, String commandLabel, String... arguments);
+
+    ActionResult<List<String>> executeTab(CommandSender sender, String alias, String... args);
 
     Optional<Command> parent();
+
     boolean hasParent();
 
     String name();

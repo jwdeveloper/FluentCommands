@@ -4,17 +4,18 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Data
 @Accessors(fluent = true)
 public class CommandProperties {
-    private Map<String, Object> customProperties;
+    private Map<String, Object> customProperties = new HashMap<>();
 
     private String name;
 
-    private List<SenderType> disabledSenders;
+    private List<SenderType> excludedSenders = new ArrayList<>();
 
     private String shortDescription = "";
 

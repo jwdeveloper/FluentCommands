@@ -117,6 +117,12 @@ public class FluentCommandsRegistry implements CommandsRegistry {
 
 
     private SimpleCommandMap getCommandMap() {
+
+
+        if (Bukkit.getServer() == null) {
+            return null;
+        }
+
         try {
             return (SimpleCommandMap) getPrivateField(Bukkit.getServer(), "commandMap");
         } catch (Exception e) {
