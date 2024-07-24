@@ -2,18 +2,13 @@ package io.github.jwdeveloper.spigot.commands.services;
 
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.SenderType;
-import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -27,7 +22,7 @@ public class ValidationServiceTest {
 
     @BeforeEach
     public void setUp() {
-        service = new ValidationService();
+        service = new ValidationService(new FluentMessageService());
         playerMock = mock(Player.class);
         commandSenderMock = mock(CommandSender.class);
     }
@@ -42,7 +37,7 @@ public class ValidationServiceTest {
         ActionResult<CommandSender> result = service.hasSenderPermissions(playerMock, permissions);
 
         assertTrue(result.isSuccess());
-        assertEquals(playerMock, result.getObject());
+        assertEquals(playerMock, result.getValue());
     }
 
     @Test

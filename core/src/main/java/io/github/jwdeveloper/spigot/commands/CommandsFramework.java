@@ -7,6 +7,8 @@ import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builders.FluentCommandBuilder;
 import io.github.jwdeveloper.spigot.commands.listeners.DisableCommandsApiListener;
 import io.github.jwdeveloper.spigot.commands.services.*;
+import io.github.jwdeveloper.spigot.commands.templates.FluentCommandsTemplate;
+import io.github.jwdeveloper.spigot.commands.templates.PatternService;
 import org.bukkit.Bukkit;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
@@ -37,9 +39,10 @@ public class CommandsFramework {
         builder.registerSingleton(CommandsApi.class, FluentCommandsApi.class);
         builder.registerSingleton(CommandsRegistry.class, FluentCommandsRegistry.class);
         builder.registerTransient(CommandBuilder.class, FluentCommandBuilder.class);
+        builder.registerTransient(MessagesService.class, FluentMessageService.class);
+        builder.registerTransient(CommandsTemplate.class, FluentCommandsTemplate.class);
 
-
-
+        builder.registerSingleton(PatternService.class);
         builder.registerSingleton(DisableCommandsApiListener.class);
 
 

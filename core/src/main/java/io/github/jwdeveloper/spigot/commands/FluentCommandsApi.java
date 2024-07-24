@@ -12,10 +12,14 @@ import java.util.stream.Stream;
 public class FluentCommandsApi implements CommandsApi {
     private final CommandsRegistry commandsRegistry;
     private final DependanceContainer container;
+    private final CommandsTemplate commandsTemplate;
 
-    public FluentCommandsApi(CommandsRegistry commandsRegistry, DependanceContainer container) {
+    public FluentCommandsApi(CommandsRegistry commandsRegistry,
+                             DependanceContainer container,
+                             CommandsTemplate commandsTemplate) {
         this.commandsRegistry = commandsRegistry;
         this.container = container;
+        this.commandsTemplate = commandsTemplate;
     }
 
     @Override
@@ -25,12 +29,7 @@ public class FluentCommandsApi implements CommandsApi {
 
     @Override
     public CommandBuilder create(Object templateObject) {
-        return null;
-    }
-
-    @Override
-    public CommandBuilder create(Class<?> templateType) {
-        return null;
+        return commandsTemplate.templateToBuilder(templateObject, create());
     }
 
     @Override

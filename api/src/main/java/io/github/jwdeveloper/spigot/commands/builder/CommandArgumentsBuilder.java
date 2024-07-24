@@ -9,7 +9,9 @@ import java.util.stream.Stream;
 
 public interface CommandArgumentsBuilder<T> {
 
-    T addArgument(Consumer<ArgumentBuilder> action);
+    ArgumentBuilder argument(String name);
+
+    T addArgument(String name, Consumer<ArgumentBuilder> action);
 
     default T addArgument(String name) {
         return addArgument(name, ArgumentType.TEXT, (x) -> {
@@ -21,14 +23,10 @@ public interface CommandArgumentsBuilder<T> {
         });
     }
 
-    default T addArgument(String name, Consumer<ArgumentBuilder> action) {
-        return addArgument(name, ArgumentType.TEXT, action);
-    }
 
     default T addArgument(String name, ArgumentType argumentType, Consumer<ArgumentBuilder> action) {
-        return addArgument(argumentBuilder ->
+        return addArgument(name, argumentBuilder ->
         {
-            argumentBuilder.withName(name);
             argumentBuilder.withType(argumentType);
             action.accept(argumentBuilder);
         });

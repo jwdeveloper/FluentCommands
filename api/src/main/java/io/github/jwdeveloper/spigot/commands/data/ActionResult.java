@@ -7,14 +7,14 @@ import java.util.Optional;
 @Data
 public class ActionResult<T> {
     private boolean success = true;
-    private T object;
+    private T value;
     private String message;
 
     public ActionResult() {
     }
 
     protected ActionResult(T object) {
-        this.object = object;
+        this.value = object;
     }
 
     protected ActionResult(T object, boolean success) {
@@ -36,7 +36,7 @@ public class ActionResult<T> {
     }
 
     public boolean hasObject() {
-        return object != null;
+        return value != null;
     }
 
     public static <T> ActionResult<T> success() {

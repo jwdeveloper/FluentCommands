@@ -7,11 +7,9 @@ import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentType;
 import io.github.jwdeveloper.spigot.commands.data.argumetns.parsing.ArgumentEvent;
 import io.github.jwdeveloper.spigot.commands.data.argumetns.parsing.ArgumentParser;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public interface ArgumentBuilder {
 
@@ -65,10 +63,12 @@ public interface ArgumentBuilder {
         }));
     }
 
-    default ArgumentBuilder withIsRequired(boolean required) {
+    default ArgumentBuilder withRequired(boolean required) {
         return withProperty(e -> e.required(required));
     }
-
+    default ArgumentBuilder withRequired() {
+        return withProperty(e -> e.required(true));
+    }
 
     default ArgumentBuilder withDefaultValue(Object required) {
         return withProperty(e -> e.defaultValue(required));

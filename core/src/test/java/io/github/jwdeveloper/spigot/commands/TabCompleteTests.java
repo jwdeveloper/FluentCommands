@@ -12,8 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-import java.util.List;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
@@ -67,7 +65,7 @@ public class TabCompleteTests {
         }
 
         Assertions.assertTrue(result.isSuccess());
-        var value = result.getObject();
+        var value = result.getValue();
         Assertions.assertEquals("some", value.get(0));
         Assertions.assertEquals("suggestions", value.get(1));
         Assertions.assertEquals("from", value.get(2));

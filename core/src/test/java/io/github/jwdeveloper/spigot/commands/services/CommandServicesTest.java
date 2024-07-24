@@ -21,7 +21,7 @@ public class CommandServicesTest {
 
     @BeforeEach
     public void setUp() {
-        commandService = new CommandServices(null, null);
+        commandService = new CommandServices(null, null, null, null);
         mainCommand = mock(Command.class);
         subCommand = mock(Command.class);
         nestedSubCommand = mock(Command.class);

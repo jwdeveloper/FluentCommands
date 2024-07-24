@@ -55,11 +55,11 @@ public class CommandTests {
         Assertions.assertTrue(result.isSuccess());
 
 
-        var value = result.getObject();
+        var value = result.getValue();
         Assertions.assertEquals(3, value.argumentCount());
-        Assertions.assertEquals("this", value.argument(0, String.class));
-        Assertions.assertEquals("1", value.argument(1, Integer.class));
-        Assertions.assertEquals("false", value.argument(2, Boolean.class));
+        Assertions.assertEquals("this", value.getArgument(0, String.class));
+        Assertions.assertEquals("1", value.getArgument(1, Integer.class));
+        Assertions.assertEquals("false", value.getArgument(2, Boolean.class));
     }
 
     @Test
@@ -79,11 +79,11 @@ public class CommandTests {
         Assertions.assertTrue(result.isSuccess());
 
 
-        var value = result.getObject();
+        var value = result.getValue();
         Assertions.assertEquals(3, value.argumentCount());
-        Assertions.assertEquals("this", value.argument(0, String.class));
-        Assertions.assertEquals(1.0f, value.argument(1, Integer.class));
-        Assertions.assertEquals(false, value.argument(2, Boolean.class));
+        Assertions.assertEquals("this", value.getArgument(0, String.class));
+        Assertions.assertEquals(1.0f, value.getArgument(1, Integer.class));
+        Assertions.assertEquals(false, value.getArgument(2, Boolean.class));
     }
 
 
@@ -104,11 +104,11 @@ public class CommandTests {
         }
 
         Assertions.assertTrue(result.isSuccess());
-        var value = result.getObject();
+        var value = result.getValue();
         Assertions.assertEquals("sub", value.command().name());
         Assertions.assertEquals(2, value.argumentCount());
-        Assertions.assertEquals("1", value.argument(0, String.class));
-        Assertions.assertEquals("false", value.argument(1, String.class));
+        Assertions.assertEquals("1", value.getArgument(0, String.class));
+        Assertions.assertEquals("false", value.getArgument(1, String.class));
     }
 
 
@@ -129,7 +129,7 @@ public class CommandTests {
         }
 
         Assertions.assertTrue(result.isSuccess());
-        var value = result.getObject();
+        var value = result.getValue();
         Assertions.assertEquals("sub", value.command().name());
         Assertions.assertEquals(0, value.argumentCount());
     }

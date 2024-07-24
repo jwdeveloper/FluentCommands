@@ -8,9 +8,7 @@ import io.github.jwdeveloper.spigot.commands.services.CommandServices;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,7 +21,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
     private final List<ArgumentProperties> arguments;
     private final List<Command> children;
     private final Map<String, Command> childrenByName;
-    private final CommandServices services;
+    private final CommandServices commandService;
 
     @Setter
     private Command parent;
@@ -35,7 +33,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
         super(properties.name());
         this.properties = properties;
         this.arguments = argumentProperties;
-        this.services = services;
+        this.commandService = services;
         this.children = children;
         this.childrenByName = children.stream().collect(Collectors.toMap(Command::name, e -> e));
     }
@@ -56,8 +54,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
     }
 
     public ActionResult<CommandEvent> executeCommand(CommandSender sender, String commandLabel, String[] arguments) {
-        var target = services.targetedCommand(this, arguments);
-        var result = services.executeService().execute(target.getCommand(), sender, commandLabel, target.getArguments(), arguments);
+        var result = commandService.execute(this, sender, commandLabel, arguments);
         if (result.isFailed()) {
             sender.sendMessage(result.getMessage());
         }
@@ -66,8 +63,8 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
 
     @Override
     public ActionResult<List<String>> executeTab(CommandSender sender, String alias, String... arguments) {
-        var target = services.targetedCommand(this, arguments);
-        var result = services.executeService().executeTab(target.getCommand(), sender, alias, target.getArguments(), arguments);
+        var target = commandService.targetedCommand(this, arguments);
+        var result = commandService.executeTab(target.getCommand(), sender, alias, target.getArguments(), arguments);
         return ActionResult.success(result);
     }
 
@@ -77,7 +74,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
         if (result.isFailed()) {
             return Collections.emptyList();
         }
-        return result.getObject();
+        return result.getValue();
     }
 
     @Override
