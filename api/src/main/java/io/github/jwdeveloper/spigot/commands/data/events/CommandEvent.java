@@ -4,6 +4,7 @@ import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.data.expressions.CommandExpression;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -21,6 +22,8 @@ public class CommandEvent<T extends CommandSender> {
     private CommandExpression expression;
     private DependanceContainer container;
     private Command command;
+    @Setter
+    private Object output;
 
 
     public CommandEvent(T sender,
@@ -37,7 +40,7 @@ public class CommandEvent<T extends CommandSender> {
 
 
     public int argumentCount() {
-        return arguments.length;
+        return expression.invokedCommand().getArguments().size();
     }
 
     public String argument(int argument) {

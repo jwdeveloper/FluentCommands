@@ -1,14 +1,14 @@
-package io.github.jwdeveloper.spigot.commands.data.argumetns.parsing;
+package io.github.jwdeveloper.spigot.commands.argumetns.parsing;
 
 import io.github.jwdeveloper.spigot.commands.Command;
-import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentProperties;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.bukkit.command.CommandSender;
 
 @Data
 @Accessors(fluent = true)
-public class ArgumentEvent {
+public class ArgumentEventOld {
 
     Object previousValue;
     CommandSender sender;

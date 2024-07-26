@@ -4,11 +4,13 @@ import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.dependance.implementation.DependanceContainerBuilder;
 import io.github.jwdeveloper.dependance.injector.api.events.events.OnInjectionEvent;
 import io.github.jwdeveloper.spigot.commands.Command;
+import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
 import io.github.jwdeveloper.spigot.commands.data.expressions.CommandExpression;
 import org.bukkit.command.CommandSender;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 public class TemplateMethodHandler {
 
@@ -29,7 +31,8 @@ public class TemplateMethodHandler {
         this.commandEvent = event;
         try {
             var params = container.resolveParameters(method);
-            method.invoke(target,params);
+            var result = method.invoke(target, params);
+            event.output(result);
         } catch (Exception e) {
             throw new RuntimeException("Error while invoking command: " + command.name(), e);
         }
@@ -50,10 +53,8 @@ public class TemplateMethodHandler {
         return builder.build();
     }
 
-    private Object handleSender(OnInjectionEvent event)
-    {
-        if(event.input().equals(CommandSender.class))
-        {
+    private Object handleSender(OnInjectionEvent event) {
+        if (event.input().equals(CommandSender.class)) {
             return event.output();
         }
         if (CommandSender.class.isAssignableFrom(event.input())) {

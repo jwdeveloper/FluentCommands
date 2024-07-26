@@ -16,7 +16,27 @@ import static org.mockito.Mockito.*;
 public class CommandTests {
 
 
-    CommandsApi api;
+    public static void main(String[] args) {
+        Commands api = CommandsFramework.api();
+        Command spawn = api.create("/spawn <arg1:text> <arg2:number>")
+                .addArgument("arg1", argumentBuilder ->
+                {
+                    argumentBuilder.withSuggestions("asd", "ad", "asdas");
+                })
+                .addArgument("arg2", argumentBuilder ->
+                {
+                    argumentBuilder.withSuggestions("asdada", "adads", "adasda");
+                })
+                .register();
+
+        Command jump = api.create("/jump <arg3:text> <arg3:bool> <arg3:number>")
+                .register();
+
+        spawn.execute(args);
+        jump.execute(args);
+    }
+
+    Commands api;
 
     MockedStatic<Bukkit> bukkitMock;
 
@@ -46,7 +66,7 @@ public class CommandTests {
         var sender = mock(Player.class);
         var command = api.create("test")
                 .build();
-        var result = command.executeCommand(sender, "", "this", "1", "false");
+        var result = command.execute(sender, "this", "1", "false");
 
         if (result.isFailed()) {
             System.out.println(result.getMessage());
@@ -70,7 +90,7 @@ public class CommandTests {
                 .addNumberArgument("two")
                 .addBoolArgument("three")
                 .build();
-        var result = command.executeCommand(sender, "", "this", "1", "false");
+        var result = command.execute(sender, "", "this", "1", "false");
 
         if (result.isFailed()) {
             System.out.println(result.getMessage());
@@ -97,7 +117,7 @@ public class CommandTests {
                 .addSubCommand("sub", commandBuilder -> {
                 })
                 .build();
-        var result = command.executeCommand(sender, "", "sub", "1", "false");
+        var result = command.execute(sender, "", "sub", "1", "false");
 
         if (result.isFailed()) {
             System.out.println(result.getMessage());
@@ -122,7 +142,7 @@ public class CommandTests {
                 .addSubCommand("sub", commandBuilder -> {
                 })
                 .build();
-        var result = command.executeCommand(sender, "", "test", "1", "false", "sub");
+        var result = command.execute(sender, "", "test", "1", "false", "sub");
 
         if (result.isFailed()) {
             System.out.println(result.getMessage());

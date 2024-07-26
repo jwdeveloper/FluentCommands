@@ -1,6 +1,6 @@
 package io.github.jwdeveloper.spigot.commands;
 
-import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentDisplay;
+import io.github.jwdeveloper.spigot.commands.argumetns.SuggestionMode;
 import io.github.jwdeveloper.spigot.commands.mocks.CommandsRegistryMock;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mockStatic;
 public class TabCompleteTests {
 
 
-    CommandsApi api;
+    Commands api;
 
     MockedStatic<Bukkit> bukkitMock;
 
@@ -51,12 +51,12 @@ public class TabCompleteTests {
                 .addTextArgument("one")
                 .addNumberArgument("two", argumentBuilder ->
                 {
-                    argumentBuilder.withDisplayMode(ArgumentDisplay.SUGGESTIONS);
+                    argumentBuilder.withDisplayMode(SuggestionMode.SUGGESTIONS);
                     argumentBuilder.withSuggestions("some", "suggestions", "from", "me");
                 })
                 .build();
 
-        var result = command.executeTab(sender,
+        var result = command.executeHint(sender,
                 "",
                 "0", "1");
 

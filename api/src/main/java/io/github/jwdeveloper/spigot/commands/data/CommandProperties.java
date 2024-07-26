@@ -37,7 +37,7 @@ public class CommandProperties {
 
     private boolean hideFromCommands = false;
 
-    private boolean hideFromTabDisplay = false;
+    private boolean hideFromHints = false;
 
     private boolean hideFromDocumentation = false;
 

@@ -2,8 +2,9 @@ package io.github.jwdeveloper.spigot.commands;
 
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
-import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentProperties;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
 import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
@@ -20,9 +21,14 @@ public interface Command {
 
     Optional<Command> child(String name);
 
-    ActionResult<CommandEvent> executeCommand(CommandSender sender, String commandLabel, String... arguments);
+    ActionResult<CommandEvent> execute(CommandSender sender, String commandLabel, String... arguments);
 
-    ActionResult<List<String>> executeTab(CommandSender sender, String alias, String... args);
+
+    default ActionResult<CommandEvent> execute(String... arguments) {
+        return execute(Bukkit.getConsoleSender(), "", arguments);
+    }
+
+    ActionResult<List<String>> executeHint(CommandSender sender, String alias, String... args);
 
     Optional<Command> parent();
 

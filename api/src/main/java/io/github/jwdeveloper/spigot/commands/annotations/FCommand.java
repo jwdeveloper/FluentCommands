@@ -8,4 +8,12 @@ public @interface FCommand {
     String pattern() default "";
 
     String name() default "";
+
+    String description() default "";
+
+    String shortDescription() default "";
+
+    String label() default "";
+
+    String permission() default "";
 }

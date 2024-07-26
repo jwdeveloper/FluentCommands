@@ -1,12 +1,12 @@
 package io.github.jwdeveloper.spigot.commands.templates;
 
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
-import io.github.jwdeveloper.spigot.commands.CommandsTemplate;
+import io.github.jwdeveloper.spigot.commands.TemplateCommand;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommand;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentType;
+import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternExpressionService;
 import org.bukkit.command.CommandSender;
 
 import java.lang.annotation.Annotation;
@@ -14,12 +14,12 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class FluentCommandsTemplate implements CommandsTemplate {
+public class FluentTemplateCommand implements TemplateCommand {
 
-    private final PatternService patternService;
+    private final PatternExpressionService patternService;
     private final DependanceContainer container;
 
-    public FluentCommandsTemplate(PatternService patternService, DependanceContainer container) {
+    public FluentTemplateCommand(PatternExpressionService patternService, DependanceContainer container) {
         this.patternService = patternService;
         this.container = container;
     }
@@ -29,16 +29,22 @@ public class FluentCommandsTemplate implements CommandsTemplate {
         var model = getModel(template);
         var commandA = model.getCommandAnnotation();
 
-        var patternResult = patternService.resolvePattern(commandA.pattern());
+        var patternResult = patternService.resolve(commandA.pattern());
         if (patternResult.isFailed()) {
             return builder;
         }
-        var patternData = patternResult.getValue();
-        builder.withName(patternData.commandName());
-        for (var argument : patternData.arguments()) {
-            builder.argument(argument.name())
+        var commandData = patternResult.getValue();
+        for (var name : commandData.namesChain()) {
+            builder = builder.subCommand(name);
+        }
+        for (var argument : commandData.arguments()) {
+            var argumentBuilder = builder.argument(argument.name());
+
+            argumentBuilder
+                    .withSuggestions(argument.suggestions())
+                    .withDefaultValue(argument.defaultValue())
                     .withRequired(argument.required())
-                    .withType(ArgumentType.valueOf(argument.type().toUpperCase()));
+                    .withType(argument.type());
         }
 
         for (var method : model.getCommandMethods()) {
@@ -60,10 +66,7 @@ public class FluentCommandsTemplate implements CommandsTemplate {
             var annotation = method.getAnnotation(FCommandBuilder.class);
             targetCommand = annotation.name();
         }
-
-        if (!targetCommand.isEmpty()) {
-            builder = builder.subCommand(targetCommand);
-        }
+        builder = getBuilder(targetCommand, builder);
         try {
             var methodContainer = container.createChildContainer()
                     .registerSingleton(CommandBuilder.class, builder)
@@ -75,6 +78,17 @@ public class FluentCommandsTemplate implements CommandsTemplate {
         }
     }
 
+    private CommandBuilder getBuilder(String targetCommand, CommandBuilder mainBuilder) {
+        if (targetCommand.isEmpty()) {
+            return mainBuilder;
+        }
+        if (targetCommand.equalsIgnoreCase(mainBuilder.properties().name()))
+            return mainBuilder;
+
+        return mainBuilder.subCommand(targetCommand);
+    }
+
+
     private void handleSingleMethod(Object target, Method method, CommandBuilder builder) {
 
         var targetCommand = "";
@@ -83,11 +97,7 @@ public class FluentCommandsTemplate implements CommandsTemplate {
             targetCommand = annotation.name();
         }
 
-        if (!targetCommand.isEmpty()) {
-            builder = builder.subCommand(targetCommand);
-        }
-
-
+        builder = getBuilder(targetCommand, builder);
         var senderTypeOptional = Arrays.stream(method.getParameterTypes())
                 .filter(e -> e.isAssignableFrom(CommandSender.class))
                 .findFirst();

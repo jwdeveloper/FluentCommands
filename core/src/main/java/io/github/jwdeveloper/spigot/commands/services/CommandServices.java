@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -24,10 +25,10 @@ public class CommandServices {
     private final EventsService eventsService;
 
     public CommandServices(
-                           CommandsRegistry registry,
-                           DependanceContainer container,
-                           ExpressionService expressionService,
-                           EventsService eventsService) {
+            CommandsRegistry registry,
+            DependanceContainer container,
+            ExpressionService expressionService,
+            EventsService eventsService) {
         this.eventsService = eventsService;
         this.registry = registry;
         this.container = container;
@@ -45,7 +46,7 @@ public class CommandServices {
                                               CommandSender sender,
                                               String commandLabel,
                                               String[] commandArguments) {
-        var expressionResult = expressionService.parseArguments(command, sender, commandArguments);
+        var expressionResult = expressionService.parse(command, sender, commandArguments);
         if (expressionResult.isFailed()) {
             return expressionResult.cast();
         }
@@ -69,22 +70,23 @@ public class CommandServices {
 
         if (arguments.isEmpty()) {
             return children.stream()
-                    .filter(e -> !e.properties().hideFromTabDisplay())
+                    .filter(e -> !e.properties().hideFromHints())
                     .map(Command::name)
                     .toList();
         }
 
         var argumentIndex = commandsArgs.length - 1;
         if (arguments.size() - 1 < argumentIndex) {
-            return List.of();
+            return Collections.emptyList();
         }
 
         var args = commandsArgs[argumentIndex];
         var argument = arguments.get(argumentIndex);
-        return switch (argument.displayMode()) {
+        return switch (argument.suggestionMode()) {
+            case NONE -> Collections.emptyList();
             case NAME -> List.of(argument.name());
-            case TYPE -> List.of("<" + argument.type().name().toLowerCase() + ">");
-            case SUGGESTIONS -> argument.suggestions().apply(args);
+            case TYPE -> List.of("<" + argument.type() + ">");
+            case SUGGESTIONS -> List.of();
         };
     }
 

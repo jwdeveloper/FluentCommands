@@ -1,13 +1,12 @@
 package io.github.jwdeveloper.spigot.commands.services;
 
-import io.github.jwdeveloper.spigot.commands.CommandsApi;
+import io.github.jwdeveloper.spigot.commands.Commands;
 import io.github.jwdeveloper.spigot.commands.CommandsFramework;
 import io.github.jwdeveloper.spigot.commands.CommandsRegistry;
 import io.github.jwdeveloper.spigot.commands.annotations.FArgument;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommand;
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.mocks.CommandsRegistryMock;
-import io.github.jwdeveloper.spigot.commands.services.parsers.CommandParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.mockStatic;
 public class ExpressionServiceTests {
 
 
-    CommandsApi api;
+    Commands api;
 
     MockedStatic<Bukkit> bukkitMock;
 
@@ -73,7 +72,7 @@ public class ExpressionServiceTests {
         var expressionService = new ExpressionService(validationMock, commandParser);
 
         var args = List.of("1", "2", "sub1", "3", "sub2", "4", "5");
-        var result = expressionService.parseArguments(command, sender, args.toArray(new String[0]));
+        var result = expressionService.parse(command, sender, args.toArray(new String[0]));
 
         System.out.println(result.getMessage());
         Assertions.assertTrue(result.isSuccess());

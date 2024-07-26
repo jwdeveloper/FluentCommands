@@ -4,28 +4,22 @@ package io.github.jwdeveloper.spigot.commands.templates;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommand;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-@FCommand(pattern = "/test <!arg1:text> <arg2:bool> <arg3:number>")
+@FCommand(
+        pattern = "/spawn <!name:text> <x:number?1.0> <color:Color?WHITE>",
+        permission = "jw.github.join!",
+        description = "this is pretty simple command!",
+        shortDescription = "short command")
 public class ExampleTemplate {
-
-    @FCommandBuilder
+    @FCommandBuilder(name = "spawn")
     public void build(CommandBuilder builder) {
-        System.out.println("Hello from the builder");
+
     }
 
-    @FCommandBuilder(name = "sub1")
-    public void build2(CommandBuilder builder) {
-        System.out.println(builder.properties().name());
-    }
-
-    @FCommand
-    public void onDefault(Player sender, String[] arg, String arg1, boolean arg2, float arg3) {
-        System.out.println("Default command invoked! " + sender + " " + arg1 + " " + arg2 + " " + arg3);
-    }
-
-    @FCommand(name = "sub1")
-    public void onSubCommand(Player sender) {
-        System.out.println("sub command invoked!");
+    @FCommand(name = "spawn")
+    public String onDefault(Player sender, String name, double coins, ChatColor entityType) {
+        return "Default command invoked! " + sender + " " + name + " " + coins + " " + entityType.name();
     }
 }

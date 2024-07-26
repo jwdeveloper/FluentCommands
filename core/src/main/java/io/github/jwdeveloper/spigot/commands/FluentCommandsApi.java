@@ -6,25 +6,24 @@ import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class FluentCommandsApi implements CommandsApi {
+public class FluentCommandsApi implements Commands {
     private final CommandsRegistry commandsRegistry;
     private final DependanceContainer container;
-    private final CommandsTemplate commandsTemplate;
+    private final TemplateCommand commandsTemplate;
 
     public FluentCommandsApi(CommandsRegistry commandsRegistry,
                              DependanceContainer container,
-                             CommandsTemplate commandsTemplate) {
+                             TemplateCommand commandsTemplate) {
         this.commandsRegistry = commandsRegistry;
         this.container = container;
         this.commandsTemplate = commandsTemplate;
     }
 
     @Override
-    public CommandBuilder create(String commandName) {
-        return create().withName(commandName);
+    public CommandBuilder create(String pattern) {
+        return create().withName(pattern);
     }
 
     @Override

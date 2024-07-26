@@ -1,21 +1,21 @@
 package io.github.jwdeveloper.spigot.commands.builders;
 
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
+import io.github.jwdeveloper.spigot.commands.ArgumentTypesRegistry;
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.CommandsRegistry;
 import io.github.jwdeveloper.spigot.commands.FluentCommand;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
-import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentProperties;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
 import io.github.jwdeveloper.spigot.commands.functions.CommandEventAction;
 import io.github.jwdeveloper.spigot.commands.services.*;
-import io.github.jwdeveloper.spigot.commands.services.parsers.CommandParser;
+import io.github.jwdeveloper.spigot.commands.services.CommandParser;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
@@ -29,15 +29,19 @@ public class FluentCommandBuilder implements CommandBuilder {
     private final CommandsRegistry registry;
     private final DependanceContainer container;
     private final Map<String, CommandBuilder> subCommadnsBuilders;
-    private final Map<String, ArgumentBuilderImpl> argumentBuilders;
+    private final Map<String, FluentArgumentBuilder> argumentBuilders;
+    private final ArgumentTypesRegistry argumentTypesRegistry;
 
-    public FluentCommandBuilder(CommandsRegistry registry, DependanceContainer container) {
+    public FluentCommandBuilder(CommandsRegistry registry,
+                                DependanceContainer container,
+                                ArgumentTypesRegistry argumentTypesRegistry) {
         this.properties = new CommandProperties();
-        this.argumentBuilders = new TreeMap<>();
         this.eventsService = new EventsService();
+        this.argumentBuilders = new TreeMap<>();
         this.subCommadnsBuilders = new TreeMap<>();
         this.container = container;
         this.registry = registry;
+        this.argumentTypesRegistry = argumentTypesRegistry;
     }
 
     @Override
@@ -60,7 +64,7 @@ public class FluentCommandBuilder implements CommandBuilder {
 
 
     @Override
-    public Command buildAndRegister() {
+    public Command register() {
         var command = build();
         registry.add(command);
         return command;
@@ -84,8 +88,10 @@ public class FluentCommandBuilder implements CommandBuilder {
 
     @Override
     public ArgumentBuilder argument(String name) {
-        var builder = argumentBuilders.computeIfAbsent(name, s -> new ArgumentBuilderImpl(new ArgumentProperties()));
+        var builder = argumentBuilders.computeIfAbsent(name, s ->
+                new FluentArgumentBuilder(new ArgumentProperties(), argumentTypesRegistry));
         builder.withName(name);
+        builder.withIndex(argumentBuilders.size());
         return builder;
     }
 
@@ -104,13 +110,11 @@ public class FluentCommandBuilder implements CommandBuilder {
     @Override
     public Command build() {
 
-        var counter = 0;
-        var arguments = new ArrayList<ArgumentProperties>();
-        for (var entry : argumentBuilders.entrySet()) {
-            var argument = entry.getValue().build();
-            argument.index(counter++);
-            arguments.add(argument);
-        }
+        var arguments = argumentBuilders.values()
+                .stream()
+                .sorted(Comparator.comparingInt(a -> a.getProperties().index()))
+                .map(FluentArgumentBuilder::build)
+                .toList();
 
         var children = subCommadnsBuilders.values()
                 .stream()

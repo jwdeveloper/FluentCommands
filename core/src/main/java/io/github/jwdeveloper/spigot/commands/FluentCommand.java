@@ -2,7 +2,7 @@ package io.github.jwdeveloper.spigot.commands;
 
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
-import io.github.jwdeveloper.spigot.commands.data.argumetns.ArgumentProperties;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
 import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
 import io.github.jwdeveloper.spigot.commands.services.CommandServices;
 import lombok.Getter;
@@ -40,7 +40,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] arguments) {
-        return executeCommand(sender, commandLabel, arguments).isSuccess();
+        return this.execute(sender, commandLabel, arguments).isSuccess();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
         return Optional.ofNullable(childrenByName.get(name));
     }
 
-    public ActionResult<CommandEvent> executeCommand(CommandSender sender, String commandLabel, String[] arguments) {
+    public ActionResult<CommandEvent> execute(CommandSender sender, String commandLabel, String[] arguments) {
         var result = commandService.execute(this, sender, commandLabel, arguments);
         if (result.isFailed()) {
             sender.sendMessage(result.getMessage());
@@ -62,7 +62,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
     }
 
     @Override
-    public ActionResult<List<String>> executeTab(CommandSender sender, String alias, String... arguments) {
+    public ActionResult<List<String>> executeHint(CommandSender sender, String alias, String... arguments) {
         var target = commandService.targetedCommand(this, arguments);
         var result = commandService.executeTab(target.getCommand(), sender, alias, target.getArguments(), arguments);
         return ActionResult.success(result);
@@ -70,7 +70,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] arguments) {
-        var result = executeTab(sender, alias, arguments);
+        var result = executeHint(sender, alias, arguments);
         if (result.isFailed()) {
             return Collections.emptyList();
         }

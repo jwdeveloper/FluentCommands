@@ -10,8 +10,9 @@ public class TemplateTests extends CommandsTestBase {
         var template = new ExampleTemplate();
         var command = api.create(template).build();
 
-        var result = command.executeCommand(sender, "", "hello", "true", "12");
 
+        var result = command.execute(sender, "", "hello", "12");
+        System.out.println(result.getValue().output());
         var i = 0;
     }
 }

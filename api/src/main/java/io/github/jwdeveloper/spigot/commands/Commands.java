@@ -7,8 +7,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public interface CommandsApi {
-    CommandBuilder create(String commandName);
+public interface Commands {
+
+    CommandBuilder create(String pattern);
 
     CommandBuilder create(Object templateObject);
 

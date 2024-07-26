@@ -8,7 +8,7 @@ public interface CommandBuilder extends
         CommandArgumentsBuilder<CommandBuilder>,
         SubCommandsBuilder<CommandBuilder> {
 
-    Command buildAndRegister();
+    Command register();
 
     Command build();
 }

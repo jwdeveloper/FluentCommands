@@ -56,8 +56,8 @@ public interface CommandPropsBuilder<T> {
         return self();
     }
 
-    default T withHideFromTab(boolean isHide) {
-        properties().hideFromTabDisplay(isHide);
+    default T withHideFromHints(boolean isHide) {
+        properties().hideFromHints(isHide);
         return self();
     }
 
