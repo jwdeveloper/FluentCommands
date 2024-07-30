@@ -1,11 +1,12 @@
 package io.github.jwdeveloper.spigot.commands.builder.arguments;
 
-import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
+import io.github.jwdeveloper.spigot.commands.data.DisplayAttribute;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.functions.ArgumentParser;
 import io.github.jwdeveloper.spigot.commands.functions.ArgumentSuggestions;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -30,8 +31,33 @@ public interface ArgumentBuilder {
         return withProperty(e -> e.type(argumentType));
     }
 
-    default ArgumentBuilder withDisplayMode(SuggestionMode displayMode) {
-        return withProperty(e -> e.suggestionMode(displayMode));
+    default ArgumentBuilder withDisplayAttribute(DisplayAttribute... displayMode) {
+        return withProperty(e -> e.displayAttributes().addAll(Arrays.stream(displayMode).toList()));
+    }
+
+    default ArgumentBuilder withDisplayDescription() {
+        return withDisplayAttribute(DisplayAttribute.DESCRIPTION);
+    }
+
+
+    default ArgumentBuilder withDisplayName() {
+        return withDisplayAttribute(DisplayAttribute.NAME);
+    }
+
+    default ArgumentBuilder withDisplayType() {
+        return withDisplayAttribute(DisplayAttribute.TYPE);
+    }
+
+    default ArgumentBuilder withDisplayNone() {
+        return withDisplayAttribute(DisplayAttribute.NONE);
+    }
+
+    default ArgumentBuilder withDisplayError() {
+        return withDisplayAttribute(DisplayAttribute.ERROR);
+    }
+
+    default ArgumentBuilder withDisplaySuggestions() {
+        return withDisplayAttribute(DisplayAttribute.SUGGESTIONS);
     }
 
     default ArgumentBuilder withSuggestions(ArgumentSuggestions suggestions) {

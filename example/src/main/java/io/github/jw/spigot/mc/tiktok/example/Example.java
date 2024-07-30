@@ -3,7 +3,7 @@ package io.github.jw.spigot.mc.tiktok.example;
 
 import io.github.jwdeveloper.spigot.commands.Commands;
 import io.github.jwdeveloper.spigot.commands.CommandsFramework;
-import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
+import io.github.jwdeveloper.spigot.commands.data.DisplayAttribute;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,7 +26,16 @@ public final class Example extends JavaPlugin {
                 .onSuggestion(argumentSuggestionEvent -> List.of("Heloo", "world"))
                 .register();
 
-        commandsApi.create("/join <name:siema(cb)> <age:number>")
+        commandsApi.create("/join <name:Text> <age:number>")
+                .addArgument("name", builder ->
+                {
+                    builder.withDescription("This argument set name");
+                    builder.withDisplayAttribute(
+                            DisplayAttribute.DESCRIPTION,
+                            DisplayAttribute.NAME,
+                            DisplayAttribute.TYPE,
+                            DisplayAttribute.ERROR);
+                })
                 .onPlayerExecute(playerCommandEvent ->
                 {
 
@@ -60,11 +69,11 @@ public final class Example extends JavaPlugin {
         commandsApi.create("/test <radios:Number(v:$113123123$,dn)> <name:Text> <age:Number> <gender:Text>")
                 .addArgument("gender", argumentBuilder ->
                 {
-                    argumentBuilder.withDisplayMode(SuggestionMode.NAME);
+                    argumentBuilder.withDisplayAttribute(DisplayAttribute.NAME);
                 })
                 .addArgument("age", argumentBuilder ->
                 {
-                    argumentBuilder.withDisplayMode(SuggestionMode.NAME);
+                    argumentBuilder.withDisplayAttribute(DisplayAttribute.NAME);
                 })
                 .onPlayerExecute(event ->
                 {

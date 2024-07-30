@@ -2,7 +2,7 @@ package io.github.jwdeveloper.spigot.commands.patterns;
 
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
+import io.github.jwdeveloper.spigot.commands.data.DisplayAttribute;
 
 public class PatternService {
 
@@ -41,20 +41,20 @@ public class PatternService {
 
 
             if (argument.hasProperty("dd")) {
-                argumentBuilder.withDisplayMode(SuggestionMode.DESCRIPTION);
+                argumentBuilder.withDisplayAttribute(DisplayAttribute.DESCRIPTION);
             }
             if (argument.hasProperty("ds")) {
-                argumentBuilder.withDisplayMode(SuggestionMode.SUGGESTIONS);
+                argumentBuilder.withDisplayAttribute(DisplayAttribute.SUGGESTIONS);
             }
             if (argument.hasProperty("dt")) {
-                argumentBuilder.withDisplayMode(SuggestionMode.TYPE);
+                argumentBuilder.withDisplayAttribute(DisplayAttribute.TYPE);
             }
             if (argument.hasProperty("dn")) {
-                argumentBuilder.withDisplayMode(SuggestionMode.NAME);
+                argumentBuilder.withDisplayAttribute(DisplayAttribute.NAME);
             }
             if (argument.hasProperty("de")) {
                 //THISPLAY everything
-                argumentBuilder.withDisplayMode(SuggestionMode.NAME);
+                argumentBuilder.withDisplayAttribute(DisplayAttribute.NAME);
             }
 
             if (argument.hasProperty("dv")) {

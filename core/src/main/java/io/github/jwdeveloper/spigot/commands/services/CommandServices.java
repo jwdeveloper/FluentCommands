@@ -4,7 +4,7 @@ import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.CommandsRegistry;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
-import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
+import io.github.jwdeveloper.spigot.commands.data.DisplayAttribute;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.events.ArgumentSuggestionEvent;
 import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
@@ -75,28 +75,15 @@ public class CommandServices {
 
 
         var argumentResult = getArgument(command, sender, args);
-        var errorMessage = "";
-        if (argumentResult.getMessage() != null) {
-            errorMessage = " (" + argumentResult.getMessage() + ")";
-        }
-        var argument = argumentResult.getValue();
 
+        var argument = argumentResult.getValue();
         if (argument == null) {
             return List.of();
         }
 
-        if (argument.suggestionMode() == SuggestionMode.NAME) {
-            return List.of(argument.name() + errorMessage);
-        }
-        if (argument.suggestionMode() == SuggestionMode.NONE) {
-            return Collections.emptyList();
-        }
-        if (argument.suggestionMode() == SuggestionMode.TYPE) {
-            return List.of("<" + argument.type() + errorMessage + ">");
-        }
-
-        if (argument.suggestion() == null) {
-            return List.of("Suggestion not implemented!");
+        var displayResult = getDisplayMessage(argument, argumentResult.getMessage());
+        if (displayResult.isSuccess()) {
+            return List.of(displayResult.getValue());
         }
 
         var argumentEvent = new ArgumentSuggestionEvent();
@@ -107,7 +94,6 @@ public class CommandServices {
         argumentEvent.rawValue(argumentEvent.rawValue());
 
         var result = argument.suggestion().onSuggestion(argumentEvent);
-
         if (result.isFailed()) {
             throw new RuntimeException(result.getMessage());
         }
@@ -115,6 +101,36 @@ public class CommandServices {
         return result.getValue();
     }
 
+
+    private ActionResult<String> getDisplayMessage(ArgumentProperties argument, String error) {
+
+        if (argument.hasDisplayAttribute(DisplayAttribute.NONE)) {
+            return ActionResult.failed();
+        }
+        if (argument.hasDisplayAttribute(DisplayAttribute.SUGGESTIONS)) {
+            return ActionResult.failed();
+        }
+
+        var message = new StringBuilder();
+        message.append("<");
+        if (argument.hasDisplayAttribute(DisplayAttribute.NAME)) {
+            message.append(argument.name());
+            if (argument.hasDisplayAttribute(DisplayAttribute.TYPE)) {
+                message.append(":");
+            }
+        }
+        if (argument.hasDisplayAttribute(DisplayAttribute.TYPE)) {
+            message.append(argument.type());
+        }
+        if (argument.hasDisplayAttribute(DisplayAttribute.DESCRIPTION)) {
+            message.append(" [").append(argument.description()).append("]");
+        }
+        if (argument.hasDisplayAttribute(DisplayAttribute.ERROR) && error != null) {
+            message.append(" (").append(error).append(")");
+        }
+        message.append(">");
+        return ActionResult.success(message.toString());
+    }
 
     private ActionResult<ArgumentProperties> getArgument(Command command,
                                                          CommandSender sender,

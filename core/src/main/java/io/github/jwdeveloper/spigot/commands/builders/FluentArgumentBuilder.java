@@ -5,6 +5,7 @@ import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
+import io.github.jwdeveloper.spigot.commands.data.DisplayAttribute;
 import io.github.jwdeveloper.spigot.commands.functions.ArgumentParser;
 import lombok.Getter;
 
@@ -51,6 +52,7 @@ public class FluentArgumentBuilder implements ArgumentBuilder {
                 .findByName(argumentTypeName)
                 .orElseThrow(() -> new RuntimeException("Type not found: " + properties.type()));
 
+        withDisplayAttribute(DisplayAttribute.TYPE, DisplayAttribute.ERROR);
         withParser(argumentType);
         if (properties.defaultValue() == null)
             withDefaultValue(argumentType.defaultValue());
