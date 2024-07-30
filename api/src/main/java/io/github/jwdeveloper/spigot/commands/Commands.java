@@ -1,7 +1,8 @@
 package io.github.jwdeveloper.spigot.commands;
 
-import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypes;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
+import io.github.jwdeveloper.spigot.commands.patterns.Patterns;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,13 +15,14 @@ import java.util.stream.Stream;
  */
 public interface Commands {
 
+    Patterns patterns();
 
     /**
      * Argument types registry object
      *
-     * @return a new instance of {@link ArgumentTypesRegistry}.
+     * @return a new instance of {@link ArgumentTypes}.
      */
-    ArgumentTypesRegistry argumentTypes();
+    ArgumentTypes argumentTypes();
 
     /**
      * Creates a new command builder for a command with the specified pattern.
@@ -43,14 +45,14 @@ public interface Commands {
      *
      * @param command the command to be added.
      */
-    void add(Command command);
+    void register(Command command);
 
     /**
      * Removes the specified command from the command manager.
      *
      * @param command the command to be removed.
      */
-    void remove(Command command);
+    void unregister(Command command);
 
     /**
      * Removes all commands from the command manager.

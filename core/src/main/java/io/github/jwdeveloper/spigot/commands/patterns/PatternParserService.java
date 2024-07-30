@@ -19,8 +19,12 @@ public class PatternParserService {
                                ArrayList<Pair<String, String>> properties,
                                String defaultValue) {
 
-       public boolean hasProperty(String property) {
+        public boolean hasProperty(String property) {
             return properties.stream().anyMatch(e -> e.getKey().equals(property));
+        }
+
+        public String getProperty(String property) {
+            return properties.stream().filter(e -> e.getKey().equals(property)).findFirst().get().getValue();
         }
     }
 

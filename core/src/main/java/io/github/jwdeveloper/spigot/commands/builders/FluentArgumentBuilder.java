@@ -1,11 +1,10 @@
 package io.github.jwdeveloper.spigot.commands.builders;
 
-import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypes;
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
 import io.github.jwdeveloper.spigot.commands.functions.ArgumentParser;
 import lombok.Getter;
 
@@ -17,10 +16,10 @@ public class FluentArgumentBuilder implements ArgumentBuilder {
     @Getter
     private final ArgumentProperties properties;
     private final Set<ArgumentType> argumentType;
-    private final ArgumentTypesRegistry argumentTypes;
+    private final ArgumentTypes argumentTypes;
 
     public FluentArgumentBuilder(ArgumentProperties properties,
-                                 ArgumentTypesRegistry argumentTypesRegistry) {
+                                 ArgumentTypes argumentTypesRegistry) {
         this.properties = properties;
         argumentType = new TreeSet<>();
         argumentTypes = argumentTypesRegistry;

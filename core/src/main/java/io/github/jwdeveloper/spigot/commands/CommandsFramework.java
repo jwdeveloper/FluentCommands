@@ -4,7 +4,7 @@ import io.github.jwdeveloper.dependance.Dependance;
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.dependance.implementation.DependanceContainerBuilder;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypeBuilder;
-import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypes;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builders.FluentCommandBuilder;
 import io.github.jwdeveloper.spigot.commands.listeners.DisableCommandsApiListener;
@@ -47,7 +47,7 @@ public class CommandsFramework {
         builder.registerSingleton(Plugin.class, plugin);
         builder.registerSingleton(Commands.class, FluentCommands.class);
         builder.registerSingleton(CommandsRegistry.class, FluentCommandsRegistry.class);
-        builder.registerSingleton(ArgumentTypesRegistry.class, FluentArgumentTypesRegistry.class);
+        builder.registerSingleton(ArgumentTypes.class, FluentArgumentTypesRegistry.class);
         builder.registerTransient(ArgumentTypeBuilder.class, FluentArgumentTypeBuilder.class);
         builder.registerTransient(CommandBuilder.class, FluentCommandBuilder.class);
         builder.registerTransient(MessagesService.class, FluentMessageService.class);
@@ -78,7 +78,7 @@ public class CommandsFramework {
         defaultArgumentTypes.forEach(containerBuilder::registerTransient);
         var typesContainer = containerBuilder.build();
 
-        var argumentTypesRegistry = container.find(ArgumentTypesRegistry.class);
+        var argumentTypesRegistry = container.find(ArgumentTypes.class);
         argumentTypesRegistry.register(new EnumTypeParser(EntityType.class, "entity"));
         argumentTypesRegistry.register(new EnumTypeParser(Sound.class, "sound"));
         argumentTypesRegistry.register(new EnumTypeParser(Particle.class, "particle"));

@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
+import java.util.List;
 
 public final class Example extends JavaPlugin {
 
@@ -18,6 +19,18 @@ public final class Example extends JavaPlugin {
     @Override
     public void onEnable() {
         Commands commandsApi = CommandsFramework.enable(this);
+
+        commandsApi.argumentTypes()
+                .create("siema")
+                .onParse(event -> 1)
+                .onSuggestion(argumentSuggestionEvent -> List.of("Heloo", "world"))
+                .register();
+
+        commandsApi.create("/join <name:siema(cb)> <age:number>")
+                .onPlayerExecute(playerCommandEvent ->
+                {
+
+                }).register();
 
         commandsApi.create(new PluginCommand())
                 .register();
@@ -44,7 +57,7 @@ public final class Example extends JavaPlugin {
                 })
                 .register();
 
-        commandsApi.create("/test <radios:Number()> <name:Text> <age:Number> <gender:Text>")
+        commandsApi.create("/test <radios:Number(v:$113123123$,dn)> <name:Text> <age:Number> <gender:Text>")
                 .addArgument("gender", argumentBuilder ->
                 {
                     argumentBuilder.withDisplayMode(SuggestionMode.NAME);

@@ -2,7 +2,7 @@ package io.github.jwdeveloper.spigot.commands;
 
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypeBuilder;
-import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypes;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.events.ArgumentParseEvent;
 import io.github.jwdeveloper.spigot.commands.data.events.ArgumentSuggestionEvent;
@@ -15,13 +15,13 @@ public class FluentArgumentTypeBuilder implements ArgumentTypeBuilder {
 
     private final String name;
 
-    private final ArgumentTypesRegistry argumentTypesRegistry;
+    private final ArgumentTypes argumentTypesRegistry;
 
     private ArgumentParser parser;
     private ArgumentSuggestions suggestions;
 
 
-    public FluentArgumentTypeBuilder(String name, ArgumentTypesRegistry argumentTypesRegistry) {
+    public FluentArgumentTypeBuilder(String name, ArgumentTypes argumentTypesRegistry) {
         this.name = name;
         this.argumentTypesRegistry = argumentTypesRegistry;
         suggestions = (x) -> ActionResult.success(List.of());

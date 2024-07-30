@@ -1,9 +1,10 @@
 package io.github.jwdeveloper.spigot.commands;
 
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
-import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypes;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.patterns.PatternService;
+import io.github.jwdeveloper.spigot.commands.patterns.Patterns;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,12 +15,12 @@ public class FluentCommands implements Commands {
     private final CommandsRegistry commandsRegistry;
     private final DependanceContainer container;
     private final TemplateCommand commandsTemplate;
-    private final ArgumentTypesRegistry argumentTypesRegistry;
+    private final ArgumentTypes argumentTypesRegistry;
     private final PatternService patternService;
 
     public FluentCommands(CommandsRegistry commandsRegistry,
                           DependanceContainer container,
-                          ArgumentTypesRegistry argumentTypesRegistry,
+                          ArgumentTypes argumentTypesRegistry,
                           TemplateCommand commandsTemplate,
                           PatternService patternService) {
         this.commandsRegistry = commandsRegistry;
@@ -30,7 +31,12 @@ public class FluentCommands implements Commands {
     }
 
     @Override
-    public ArgumentTypesRegistry argumentTypes() {
+    public Patterns patterns() {
+        return null;
+    }
+
+    @Override
+    public ArgumentTypes argumentTypes() {
         return argumentTypesRegistry;
     }
 
@@ -53,12 +59,12 @@ public class FluentCommands implements Commands {
     }
 
     @Override
-    public void add(Command command) {
+    public void register(Command command) {
         commandsRegistry.add(command);
     }
 
     @Override
-    public void remove(Command command) {
+    public void unregister(Command command) {
         commandsRegistry.remove(command);
     }
 

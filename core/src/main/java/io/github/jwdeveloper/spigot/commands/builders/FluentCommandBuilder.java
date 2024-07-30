@@ -1,7 +1,7 @@
 package io.github.jwdeveloper.spigot.commands.builders;
 
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
-import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypes;
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.CommandsRegistry;
 import io.github.jwdeveloper.spigot.commands.FluentCommand;
@@ -32,11 +32,11 @@ public class FluentCommandBuilder implements CommandBuilder {
     private final DependanceContainer container;
     private final Map<String, CommandBuilder> subCommadnsBuilders;
     private final Map<String, FluentArgumentBuilder> argumentBuilders;
-    private final ArgumentTypesRegistry argumentTypesRegistry;
+    private final ArgumentTypes argumentTypesRegistry;
 
     public FluentCommandBuilder(CommandsRegistry registry,
                                 DependanceContainer container,
-                                ArgumentTypesRegistry argumentTypesRegistry) {
+                                ArgumentTypes argumentTypesRegistry) {
         this.properties = new CommandProperties();
         this.eventsService = new EventsService();
         this.argumentBuilders = new TreeMap<>();

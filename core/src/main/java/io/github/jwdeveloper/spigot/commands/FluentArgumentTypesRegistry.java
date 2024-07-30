@@ -1,16 +1,15 @@
 package io.github.jwdeveloper.spigot.commands;
 
-import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypeBuilder;
-import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypes;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class FluentArgumentTypesRegistry implements ArgumentTypesRegistry {
+public class FluentArgumentTypesRegistry implements ArgumentTypes {
 
     private final Map<String, ArgumentType> parsers = new HashMap<>();
 
@@ -35,7 +34,7 @@ public class FluentArgumentTypesRegistry implements ArgumentTypesRegistry {
     }
 
     @Override
-    public void unRegister(ArgumentType parser) {
+    public void unregister(ArgumentType parser) {
         parsers.remove(parser.name());
     }
 }

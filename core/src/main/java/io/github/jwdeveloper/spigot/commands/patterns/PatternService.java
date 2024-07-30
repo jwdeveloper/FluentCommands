@@ -56,6 +56,11 @@ public class PatternService {
                 //THISPLAY everything
                 argumentBuilder.withDisplayMode(SuggestionMode.NAME);
             }
+
+            if (argument.hasProperty("dv")) {
+                var defaultValue = argument.getProperty("dv");
+                argumentBuilder.withDefaultValue(defaultValue);
+            }
         }
         return ActionResult.success(builder);
     }
