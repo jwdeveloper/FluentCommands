@@ -6,7 +6,7 @@ import io.github.jwdeveloper.spigot.commands.CommandsRegistry;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommandArgument;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommand;
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
-import io.github.jwdeveloper.spigot.commands.mocks.CommandsRegistryMock;
+import io.github.jwdeveloper.spigot.commands.common.CommandsRegistryMock;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;

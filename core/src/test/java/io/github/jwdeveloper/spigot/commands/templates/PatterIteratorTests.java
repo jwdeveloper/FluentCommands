@@ -1,8 +1,8 @@
 package io.github.jwdeveloper.spigot.commands.templates;
 
 import io.github.jwdeveloper.spigot.commands.annotations.FCommand;
-import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternParserService;
-import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternTokenizer;
+import io.github.jwdeveloper.spigot.commands.patterns.PatternParserService;
+import io.github.jwdeveloper.spigot.commands.patterns.PatternTokenizer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.Test;

@@ -44,12 +44,21 @@ public final class Example extends JavaPlugin {
                 })
                 .register();
 
-        commandsApi.create("/test <radios:Number> <name:BlockType>")
+        commandsApi.create("/test <radios:Number()> <name:Text> <age:Number> <gender:Text>")
+                .addArgument("gender", argumentBuilder ->
+                {
+                    argumentBuilder.withDisplayMode(SuggestionMode.NAME);
+                })
+                .addArgument("age", argumentBuilder ->
+                {
+                    argumentBuilder.withDisplayMode(SuggestionMode.NAME);
+                })
                 .onPlayerExecute(event ->
                 {
                     var radious = event.getDouble(0);
                     var name = event.getString(1);
-                    System.out.println("Hello world " + radious + " " + name);
+                    System.out.println(name);
+                    event.sender().sendMessage("Command invoked! " + radious + " " + name);
                 })
                 .register();
     }

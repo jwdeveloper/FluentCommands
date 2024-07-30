@@ -1,6 +1,6 @@
 package io.github.jwdeveloper.spigot.commands;
 
-import io.github.jwdeveloper.spigot.commands.mocks.CommandsRegistryMock;
+import io.github.jwdeveloper.spigot.commands.common.CommandsRegistryMock;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;

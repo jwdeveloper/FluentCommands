@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public class CommandParser {
 
-
     public ActionResult<CommandNode> parseCommand(Command command, CommandSender sender, String... args) {
         var argumentsOutput = new ArrayList<ArgumentNode>();
         var iterator = new ArgumentIterator(args);
@@ -25,9 +24,13 @@ public class CommandParser {
             event.argument(argument);
             var result = handleSingleArgument(event, iterator, argument);
             if (result.isFailed()) {
-                return result.cast();
+                return (ActionResult) result;
             }
             argumentsOutput.add(result.getValue());
+        }
+
+        if (iterator.hasNext()) {
+            argumentsOutput.add(new ArgumentNode(null, iterator.next(), true, true));
         }
 
         var result = new CommandNode();
@@ -43,7 +46,8 @@ public class CommandParser {
         var defaultValueProvided = false;
         if (!iterator.hasNext()) {
             if (argument.required()) {
-                return ActionResult.failed("This argument is required but value is not provided!");
+                var action = (ActionResult) ActionResult.failed(argument, "This argument is required but value is not provided!");
+                return action;
             }
             iterator.append(argument.defaultValue());
             defaultValueProvided = true;
@@ -54,7 +58,7 @@ public class CommandParser {
         if (parser != null) {
             var parseResult = parser.onParse(event);
             if (parseResult.isFailed()) {
-                return ActionResult.failed(parseResult.getMessage());
+                return (ActionResult) ActionResult.failed(argument, parseResult.getMessage());
             }
             output = parseResult.getValue();
         }
@@ -63,7 +67,7 @@ public class CommandParser {
             return ActionResult.failed("Argument " + argument.name() + " parsing value is Null!");
         }
 
-        var result = new ArgumentNode(argument, output, defaultValueProvided);
+        var result = new ArgumentNode(argument, output, defaultValueProvided, false);
         return ActionResult.success(result);
     }
 

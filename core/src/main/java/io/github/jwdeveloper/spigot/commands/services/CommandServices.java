@@ -79,8 +79,12 @@ public class CommandServices {
         if (argumentResult.getMessage() != null) {
             errorMessage = " (" + argumentResult.getMessage() + ")";
         }
+        var argument = argumentResult.getValue();
 
-        var argument = getArgument(command, sender, args).getOrThrow("Unable to find next argument!");
+        if (argument == null) {
+            return List.of();
+        }
+
         if (argument.suggestionMode() == SuggestionMode.NAME) {
             return List.of(argument.name() + errorMessage);
         }
@@ -119,7 +123,15 @@ public class CommandServices {
         if (expressionResult.isSuccess()) {
             var expression = expressionResult.getValue();
             var argumentNode = expression.invokedCommand().getLastResolvedArgument();
+
             return argumentNode.cast(ArgumentNode::getArgument);
+        }
+
+        if (expressionResult.isFailed() && expressionResult.hasObject()) {
+            var props = (Object) expressionResult.getValue();
+            if (props instanceof ArgumentProperties properties) {
+                return ActionResult.failed(properties, expressionResult.getMessage());
+            }
         }
 
         if (command.arguments().isEmpty()) {

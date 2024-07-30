@@ -1,4 +1,4 @@
-package io.github.jwdeveloper.spigot.commands.mocks;
+package io.github.jwdeveloper.spigot.commands.common;
 
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.CommandsRegistry;

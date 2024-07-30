@@ -56,9 +56,6 @@ public class FluentArgumentBuilder implements ArgumentBuilder {
         if (properties.defaultValue() == null)
             withDefaultValue(argumentType.defaultValue());
 
-        if (properties.suggestion() != null)
-            properties.suggestionMode(SuggestionMode.SUGGESTIONS);
-
         if (properties.suggestion() == null)
             withSuggestions(argumentType);
 

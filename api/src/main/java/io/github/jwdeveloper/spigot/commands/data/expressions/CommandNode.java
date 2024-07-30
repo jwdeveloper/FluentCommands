@@ -30,6 +30,15 @@ public class CommandNode {
         return ActionResult.success(argumentNode);
     }
 
+
+    public boolean hasEnded() {
+        if (arguments.isEmpty()) {
+            return true;
+        }
+        var lastArg = arguments.get(arguments.size() - 1);
+        return lastArg.isEnd();
+    }
+
     public ArgumentNode getArgument(int index) {
         return arguments.get(index);
     }

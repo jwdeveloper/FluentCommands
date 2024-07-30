@@ -7,7 +7,7 @@ import io.github.jwdeveloper.spigot.commands.annotations.FCommand;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternService;
+import io.github.jwdeveloper.spigot.commands.patterns.PatternService;
 import org.bukkit.command.CommandSender;
 
 import java.lang.annotation.Annotation;

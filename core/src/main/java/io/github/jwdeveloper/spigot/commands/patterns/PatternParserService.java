@@ -1,4 +1,4 @@
-package io.github.jwdeveloper.spigot.commands.templates.expressions;
+package io.github.jwdeveloper.spigot.commands.patterns;
 
 import io.github.jwdeveloper.dependance.injector.api.util.Pair;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
@@ -18,6 +18,10 @@ public class PatternParserService {
                                List<String> suggestions,
                                ArrayList<Pair<String, String>> properties,
                                String defaultValue) {
+
+       public boolean hasProperty(String property) {
+            return properties.stream().anyMatch(e -> e.getKey().equals(property));
+        }
     }
 
     public ActionResult<CommandNode> resolve(String input) {
@@ -68,20 +72,20 @@ public class PatternParserService {
             iterator.next();
         }
         var name = iterator.next();
-        var type = getProperty(":", "Text");
+        var type = getSymbol(":", "Text");
         List<String> suggestions = new ArrayList<String>();
         if (iterator.isNext("[")) {
             suggestions = getSuggestions();
         }
-        var defaultValue = getProperty("?", "");
+        var defaultValue = getSymbol("?", "");
         var properties = new ArrayList<Pair<String, String>>();
         while (iterator.isNext("(")) {
-            properties.add(getProperty());
+            properties = getProperties();
         }
         return new ArgumentNode(name, type, required, suggestions, properties, defaultValue);
     }
 
-    private String getProperty(String symbol, String defaultValue) {
+    private String getSymbol(String symbol, String defaultValue) {
         var result = defaultValue;
         if (iterator.isNext(symbol)) {
             iterator.nextOrThrow(symbol);
@@ -90,13 +94,31 @@ public class PatternParserService {
         return result;
     }
 
-    private Pair<String, String> getProperty() {
+    private ArrayList<Pair<String, String>> getProperties() {
+        var properties = new ArrayList<Pair<String, String>>();
         iterator.nextOrThrow("(");
+
+
+        while (!iterator.isNext(")")) {
+            properties.add(getProperty());
+            if (iterator.isNext(","))
+                iterator.next();
+        }
+        iterator.nextOrThrow(")");
+        return properties;
+    }
+
+    private Pair<String, String> getProperty() {
+
+
         var name = iterator.next();
+
+        if (iterator.isNext(",") || iterator.isNext(")"))
+            return new Pair<>(name, "");
+
         iterator.nextOrThrow(":");
         var value = getName();
-        iterator.nextOrThrow(")");
-        return new Pair<String, String>(name, value);
+        return new Pair<>(name, value);
     }
 
     private List<String> getSuggestions() {

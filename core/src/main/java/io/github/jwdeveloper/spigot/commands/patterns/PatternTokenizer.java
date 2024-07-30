@@ -1,4 +1,4 @@
-package io.github.jwdeveloper.spigot.commands.templates.expressions;
+package io.github.jwdeveloper.spigot.commands.patterns;
 
 
 import lombok.Data;

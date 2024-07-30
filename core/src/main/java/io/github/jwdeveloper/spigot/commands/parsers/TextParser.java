@@ -15,27 +15,40 @@ public class TextParser implements ArgumentType {
         var iterator = event.iterator();
         var current = iterator.next();
 
-        if (!current.startsWith("\"")) {
+        var colon = getColon(current);
+        if (colon.isEmpty()) {
             return ActionResult.success(current);
         }
 
         var builder = new StringBuilder();
-        builder.append(current.substring(1)); // Add current without the opening quote
-        current = iterator.next();
-
-        // Loop until we find the closing quote or run out of arguments
-        while (iterator.hasNext() && !current.endsWith("\"")) {
-            builder.append(" ").append(current);
+        builder.append(current.substring(1));
+        while (iterator.hasNext()) {
             current = iterator.next();
+            if (current.endsWith(colon)) {
+                builder.append(" ").append(current.replace(colon, ""));
+                current = colon;
+            } else {
+                builder.append(" ").append(current);
+            }
+
+            if (current.equals(colon))
+                break;
         }
 
-        if (current.endsWith("\"")) {
-            builder.append(" ").append(current.substring(0, current.length() - 1));
-        } else {
+
+        if (!current.endsWith(colon)) {
             return ActionResult.failed("Unmatched quotation marks.");
         }
         return ActionResult.success(builder.toString());
     }
 
-
+    public String getColon(String current) {
+        if (current.startsWith("\"")) {
+            return "\"";
+        }
+        if (current.startsWith("'")) {
+            return "'";
+        }
+        return "";
+    }
 }

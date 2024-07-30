@@ -18,12 +18,19 @@ public class NumberParser implements ArgumentType {
     @Override
     public ActionResult<Object> onParse(ArgumentParseEvent event) {
         var current = event.iterator().next();
+
+
+        current = current.replaceAll(",", ".");
         try {
             if (current.isEmpty()) {
                 return ActionResult.success(1.0d);
             }
-
             return ActionResult.success(Double.parseDouble(current));
+        } catch (NumberFormatException e) {
+            if (e.getMessage().contains("For")) {
+                return ActionResult.failed("It's number, not text!");
+            }
+            return ActionResult.failed(e.getMessage());
         } catch (Exception e) {
             return ActionResult.failed(e.getMessage());
         }

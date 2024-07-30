@@ -1,14 +1,18 @@
-package io.github.jwdeveloper.spigot.commands;
+package io.github.jwdeveloper.spigot.commands.common;
 
+import io.github.jwdeveloper.spigot.commands.Command;
+import io.github.jwdeveloper.spigot.commands.Commands;
+import io.github.jwdeveloper.spigot.commands.CommandsFramework;
+import io.github.jwdeveloper.spigot.commands.CommandsRegistry;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
-import io.github.jwdeveloper.spigot.commands.mocks.CommandsRegistryMock;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockedStatic;
@@ -32,6 +36,12 @@ public abstract class CommandsTestBase {
     public void assertTrue(ActionResult actionResult) {
         Assertions.assertTrue(actionResult.isSuccess());
     }
+
+    public void assertValue(ActionResult actionResult, Object excepted) {
+        Assertions.assertTrue(actionResult.isSuccess());
+        Assertions.assertEquals(excepted, actionResult.getValue());
+    }
+
 
     public void assertFalse(ActionResult actionResult) {
         Assertions.assertFalse(actionResult.isSuccess());
@@ -79,6 +89,14 @@ public abstract class CommandsTestBase {
             builder.registerSingleton(CommandsRegistry.class, CommandsRegistryMock.class);
         });
         onBefore(api);
+    }
+
+    @AfterEach
+    public void onAfter() {
+        CommandsFramework.disable();
+        bukkitMock.reset();
+        bukkitMock.clearInvocations();
+        bukkitMock.close();
     }
 
 }

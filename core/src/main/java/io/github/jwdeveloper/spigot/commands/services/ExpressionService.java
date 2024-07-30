@@ -12,7 +12,6 @@ import java.util.Arrays;
 
 public class ExpressionService {
 
-    private static final String ignoreSymbol = "~";
     private final ValidationService validationService;
     private final CommandParser parser;
 
@@ -24,13 +23,12 @@ public class ExpressionService {
     public ActionResult<CommandExpression> parse(
             Command command,
             CommandSender sender,
-            String[] args)
-    {
+            String[] args) {
         var parsedCommands = new ArrayList<CommandNode>();
         var commandStartIndex = 0;
         for (var index = 0; index < args.length; index++) {
-            var arg = args[index];
-            if (!command.hasChild(arg)) {
+            var inputArgument = args[index];
+            if (!command.hasChild(inputArgument)) {
                 if (index != args.length - 1) {
                     continue;
                 }
@@ -39,20 +37,20 @@ public class ExpressionService {
 
             var commandArgs = Arrays.copyOfRange(args, commandStartIndex, index);
             var validationCheck = validationService.validateCommand(command, sender, commandArgs);
-            if (validationCheck.isFailed())
-            {
+            if (validationCheck.isFailed()) {
                 return validationCheck.cast();
             }
 
             var result = parser.parseCommand(command, sender, commandArgs);
             if (result.isFailed()) {
-                return result.cast();
+                return (ActionResult) result;
             }
+
             var parsedValue = result.getValue();
             parsedCommands.add(parsedValue);
 
             if (index < args.length - 1) {
-                command = command.child(arg).get();
+                command = command.child(inputArgument).get();
             }
             commandStartIndex = index + 1;
         }
@@ -60,7 +58,6 @@ public class ExpressionService {
         var expression = new CommandExpression();
         expression.setRawValue(args);
         expression.setCommandNodes(parsedCommands);
-
         return ActionResult.success(expression);
     }
 }

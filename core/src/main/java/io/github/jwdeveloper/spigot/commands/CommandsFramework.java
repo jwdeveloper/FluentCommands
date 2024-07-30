@@ -11,8 +11,8 @@ import io.github.jwdeveloper.spigot.commands.listeners.DisableCommandsApiListene
 import io.github.jwdeveloper.spigot.commands.parsers.*;
 import io.github.jwdeveloper.spigot.commands.services.*;
 import io.github.jwdeveloper.spigot.commands.templates.FluentTemplateCommand;
-import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternParserService;
-import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternService;
+import io.github.jwdeveloper.spigot.commands.patterns.PatternParserService;
+import io.github.jwdeveloper.spigot.commands.patterns.PatternService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
@@ -104,7 +104,7 @@ public class CommandsFramework {
 
         var listener = container.find(DisableCommandsApiListener.class);
         PluginDisableEvent.getHandlerList().unregister(listener);
-
         api().removeAll();
+        container = null;
     }
 }

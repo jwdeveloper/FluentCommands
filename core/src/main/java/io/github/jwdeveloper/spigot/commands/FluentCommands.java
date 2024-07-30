@@ -3,7 +3,7 @@ package io.github.jwdeveloper.spigot.commands;
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
-import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternService;
+import io.github.jwdeveloper.spigot.commands.patterns.PatternService;
 
 import java.util.List;
 import java.util.Optional;
