@@ -39,7 +39,7 @@ public class TextParser implements ArgumentType {
         if (!current.endsWith(colon)) {
             return ActionResult.failed("Unmatched quotation marks.");
         }
-        return ActionResult.success(builder.toString());
+        return ActionResult.success(builder.toString().stripLeading().stripTrailing());
     }
 
     public String getColon(String current) {

@@ -7,6 +7,7 @@ import io.github.jwdeveloper.spigot.commands.annotations.FCommandArgument;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommand;
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.common.CommandsRegistryMock;
+import io.github.jwdeveloper.spigot.commands.common.CommandsTestBase;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -22,37 +23,11 @@ import java.util.List;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-public class ExpressionServiceTests {
+public class ExpressionServiceTests extends CommandsTestBase {
 
-
-    Commands api;
-
-    MockedStatic<Bukkit> bukkitMock;
-
-    @BeforeEach
-    public void setUp() {
-        var plugin = mock(Plugin.class);
-
-
-        bukkitMock = mockStatic(Bukkit.class);
-
-        // Create mock Server and PluginManager instances
-        var serverMock = mock(Server.class);
-        var pluginManagerMock = mock(PluginManager.class);
-
-        // Mock the Bukkit.getServer() call to return the mock Server
-        bukkitMock.when(Bukkit::getServer).thenReturn(serverMock);
-        bukkitMock.when(Bukkit::getPluginManager).thenReturn(pluginManagerMock);
-
-        api = CommandsFramework.enable(plugin, builder ->
-        {
-            builder.registerSingleton(CommandsRegistry.class, CommandsRegistryMock.class);
-        });
-    }
 
     @Test
     public void should_make_arguments_string_when_argument_is_not_defined() {
-        var sender = mock(Player.class);
         var command = api.create("test")
                 .addArgument("arg1")
                 .addArgument("arg2", ArgumentBuilder::withRequired)
@@ -78,22 +53,6 @@ public class ExpressionServiceTests {
         Assertions.assertTrue(result.isSuccess());
 
         var expression = result.getValue();
-    }
-
-
-    @FCommand(pattern = "<player-name:player> <age:number> <gender>")
-    public void defaultCommand() {
-
-    }
-
-    @FCommand(pattern = "/player <!name:text> <!age:number> <!animal:entity> <!position:location>")
-    @FCommandArgument(name = "name", suggestions = "suggest")
-    public void defaultCommand(Player player) {
-
-    }
-
-    public List<String> suggest(String input) {
-        return List.of("hello", "word", "word");
     }
 
 

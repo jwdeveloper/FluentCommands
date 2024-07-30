@@ -39,7 +39,11 @@ public class PatternTokenizer implements Iterator<String>, Iterable<String> {
 
     public String lookup(int offset) {
         if (currentIndex + offset >= args.size()) {
-            return args.get(args.size() - 1);
+            var index = args.size() - 1;
+            if (index < 0)
+                return "";
+
+            return args.get(index);
         }
         return args.get(currentIndex + offset);
     }

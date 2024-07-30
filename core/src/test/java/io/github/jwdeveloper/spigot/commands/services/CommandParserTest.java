@@ -15,6 +15,31 @@ public class CommandParserTest extends CommandsTestBase {
         parser = new CommandParser();
     }
 
+
+    @Test
+    public void should_add_closing_argument() {
+        var command = create("/test <age:Number> <name:Text>").register();
+        var result = parser.parseCommand(command, sender, "123", "\"", "john", "\"", "something");
+
+        assertTrue(result);
+        var value = result.getValue();
+        assertEquals(3, value.getArguments().size());
+
+        var arg1 = value.getArgument(0);
+        Assertions.assertFalse(arg1.isDefaultValue());
+        assertEquals(123.0d, arg1.getValue());
+
+        var arg2 = value.getArgument(1);
+        Assertions.assertFalse(arg2.isDefaultValue());
+        assertEquals("john", arg2.getValue());
+
+        var arg3 = value.getArgument(2);
+        Assertions.assertTrue(arg3.isEnd());
+
+
+        Assertions.assertTrue(value.getLastResolvedArgument().isSuccess());
+    }
+
     @Test
     public void should_has_all_values_parsed() {
         var command = create("/test <age:Number> <name:Text>").register();
