@@ -1,13 +1,12 @@
 package io.github.jwdeveloper.spigot.commands.parsers;
 
-import io.github.jwdeveloper.spigot.commands.ArgumentType;
-import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.data.events.ArgumentEvent;
+import io.github.jwdeveloper.spigot.commands.data.events.ArgumentParseEvent;
+import io.github.jwdeveloper.spigot.commands.data.events.ArgumentSuggestionEvent;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 
 public class EnumTypeParser implements ArgumentType {
@@ -27,7 +26,7 @@ public class EnumTypeParser implements ArgumentType {
     }
 
     @Override
-    public ActionResult<Object> onParse(ArgumentEvent event) {
+    public ActionResult<Object> onParse(ArgumentParseEvent event) {
         try {
             var iterator = event.iterator();
             var enumName = iterator.next().toUpperCase();
@@ -40,13 +39,15 @@ public class EnumTypeParser implements ArgumentType {
     }
 
     @Override
-    public ActionResult<List<String>> suggest(ArgumentEvent event) {
-        var value = event.iterator().current();
+    public ActionResult<List<String>> onSuggestion(ArgumentSuggestionEvent event) {
+        var value = event.rawValue();
         var enums = Arrays.stream(enumType.getEnumConstants())
                 .map(Enum::name)
                 .filter(e -> e.contains(value))
                 .toList();
         return ActionResult.success(enums);
     }
+
+
 
 }

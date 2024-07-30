@@ -2,7 +2,7 @@ package io.github.jwdeveloper.spigot.commands.services;
 
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.data.events.ArgumentEvent;
+import io.github.jwdeveloper.spigot.commands.data.events.ArgumentParseEvent;
 import io.github.jwdeveloper.spigot.commands.data.expressions.ArgumentNode;
 import io.github.jwdeveloper.spigot.commands.data.expressions.CommandNode;
 import io.github.jwdeveloper.spigot.commands.iterators.ArgumentIterator;
@@ -18,7 +18,7 @@ public class CommandParser {
         var argumentsOutput = new ArrayList<ArgumentNode>();
 
         var iterator = new ArgumentIterator(args);
-        var event = new ArgumentEvent();
+        var event = new ArgumentParseEvent();
         event.command(command);
         event.iterator(iterator);
         event.sender(sender);

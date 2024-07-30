@@ -3,14 +3,14 @@ package io.github.jwdeveloper.spigot.commands.services;
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.CommandsRegistry;
+import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.data.CommandTarget;
+import io.github.jwdeveloper.spigot.commands.data.events.ArgumentSuggestionEvent;
 import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,10 +50,8 @@ public class CommandServices {
         if (expressionResult.isFailed()) {
             return expressionResult.cast();
         }
-
         var event = new CommandEvent(
                 sender,
-                commandArguments,
                 expressionResult.getValue(),
                 container,
                 command);
@@ -63,86 +61,54 @@ public class CommandServices {
     public List<String> executeTab(Command command,
                                    CommandSender sender,
                                    String alias,
-                                   String[] commandsArgs,
-                                   String[] allArgs) {
-        var arguments = command.arguments();
-        var children = command.children();
+                                   String[] args) {
 
-        if (arguments.isEmpty()) {
-            return children.stream()
-                    .filter(e -> !e.properties().hideFromHints())
+        if (args.length == 0) {
+            return command.children()
+                    .stream()
+                    .filter(e -> !e.properties().hideFromCommands())
                     .map(Command::name)
                     .toList();
         }
 
-        var argumentIndex = commandsArgs.length - 1;
-        if (arguments.size() - 1 < argumentIndex) {
+        var expressionResult = expressionService.parse(command, sender, args);
+        if (expressionResult.isFailed()) {
+            return List.of();
+        }
+
+
+        var expression = expressionResult.getValue();
+        var argumentNode = expression.invokedCommand().getLastArgument();
+        var argument = argumentNode.getArgument();
+
+        if (argument.suggestionMode() == SuggestionMode.NAME) {
+            return List.of(argument.name());
+        }
+        if (argument.suggestionMode() == SuggestionMode.NONE) {
             return Collections.emptyList();
         }
+        if (argument.suggestionMode() == SuggestionMode.TYPE) {
+            return List.of("<" + argument.type() + ">");
+        }
 
-        var args = commandsArgs[argumentIndex];
-        var argument = arguments.get(argumentIndex);
-        return switch (argument.suggestionMode()) {
-            case NONE -> Collections.emptyList();
-            case NAME -> List.of(argument.name());
-            case TYPE -> List.of("<" + argument.type() + ">");
-            case SUGGESTIONS -> List.of();
-        };
+        if (argument.suggestion() == null) {
+            return List.of("Suggestion not implemented!");
+        }
+
+        var argumentEvent = new ArgumentSuggestionEvent();
+        argumentEvent.argument(argumentNode.getArgument());
+        argumentEvent.command(command);
+        argumentEvent.sender(sender);
+        argumentEvent.value(argumentEvent.value());
+        argumentEvent.rawValue(argumentEvent.rawValue());
+
+        var result = argument.suggestion().onSuggestion(argumentEvent);
+
+        if (result.isFailed()) {
+            throw new RuntimeException(result.getMessage());
+        }
+
+        return result.getValue();
     }
 
-    /**
-     * Example: /say hello John
-     * <p>
-     * If main command is called say has subcommand hello
-     * then hello should be output of the method
-     * <p>
-     * Looks for the Target invoked command based of the arguments
-     * If no command was found then returns empty Optional
-     * If child was found then returns child
-     *
-     * @param command main contain
-     * @param args    list of the arguments
-     * @return target command and arguments that belongs to it
-     */
-
-    public CommandTarget targetedCommand(Command command, String[] args) {
-        if (args.length == 0 && command.children().isEmpty()) {
-            return new CommandTarget(command, args);
-        }
-
-        //test <text> <text>
-        //test tree -> tree is child
-        var arg = args[0];
-        if (command.hasChild(arg)) {
-            var childOptional = command.child(arg);
-            var child = childOptional.get();
-
-            var subCommandArgs = Arrays.copyOfRange(args, 1, args.length);
-            return targetedCommand(child, subCommandArgs);
-        }
-
-        var arguments = command.arguments();
-        var argumentsSize = arguments.size();
-
-        //test <text> <text>
-        //test one
-        if (args.length <= argumentsSize) {
-            return new CommandTarget(command, args);
-        }
-
-        //test <text> <text>
-        //test one two three -> three is child
-        var childName = args[argumentsSize];
-        if (command.hasChild(childName)) {
-            var childOptional = command.child(childName);
-            var child = childOptional.get();
-
-            var subCommandArgs = Arrays.copyOfRange(args, argumentsSize + 1, args.length);
-            return targetedCommand(child, subCommandArgs);
-        }
-
-        //test <text> <text>
-        //test one two three -> three is not child
-        return new CommandTarget(command, args);
-    }
 }

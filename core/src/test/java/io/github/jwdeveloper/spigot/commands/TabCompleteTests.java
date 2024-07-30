@@ -1,6 +1,6 @@
 package io.github.jwdeveloper.spigot.commands;
 
-import io.github.jwdeveloper.spigot.commands.argumetns.SuggestionMode;
+import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
 import io.github.jwdeveloper.spigot.commands.mocks.CommandsRegistryMock;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;

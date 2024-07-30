@@ -15,4 +15,8 @@ public class CommandNode {
     public ArgumentNode getArgument(int index) {
         return arguments.get(index);
     }
+
+    public ArgumentNode getLastArgument() {
+        return arguments.get(arguments.size() - 1);
+    }
 }

@@ -8,7 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 @FCommand(
-        pattern = "/spawn <!name:text> <x:number?1.0> <color:Color?WHITE>",
+        pattern = "/spawn <!name:text[name()]> <x:number?1.0> <color:Color?WHITE>",
         permission = "jw.github.join!",
         description = "this is pretty simple command!",
         shortDescription = "short command")

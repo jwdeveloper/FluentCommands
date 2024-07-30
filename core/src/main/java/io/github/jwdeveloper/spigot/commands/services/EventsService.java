@@ -8,11 +8,12 @@ import lombok.Getter;
 import org.bukkit.command.CommandSender;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 @Getter
 public class EventsService {
 
-    private final Map<Class<?>, Set<CommandEventAction>> eventsMap;
+    private final Map<Class<?>, Set<Consumer>> eventsMap;
 
     public EventsService() {
         this.eventsMap = new HashMap<>();
@@ -36,15 +37,13 @@ public class EventsService {
 
 
     private ActionResult<CommandEvent> executeAction(Class<?> senderType, Command command, CommandEvent event) {
-
-
         var actions = eventsMap.get(senderType);
         if (actions == null || actions.isEmpty()) {
             return ActionResult.success(event);
         }
         for (var action : actions) {
             try {
-                action.execute(command, event);
+                action.accept(event);
             } catch (Exception e) {
                 return ActionResult.failed(event, "An error occurred while executing actions: " + e.getMessage());
             }
@@ -52,7 +51,7 @@ public class EventsService {
         return ActionResult.success();
     }
 
-    public void subscribe(Class<?> senderType, CommandEventAction<?> action) {
+    public  <E extends CommandSender> void subscribe(Class<?> senderType, Consumer<CommandEvent<E>> action) {
         var actions = eventsMap.computeIfAbsent(senderType, k -> new HashSet<>());
         actions.add(action);
     }

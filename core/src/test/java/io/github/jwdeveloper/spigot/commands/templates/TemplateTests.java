@@ -11,7 +11,7 @@ public class TemplateTests extends CommandsTestBase {
         var command = api.create(template).build();
 
 
-        var result = command.execute(sender, "", "hello", "12");
+        var result = command.executeCommand(sender, "", "hello", "12");
         System.out.println(result.getValue().output());
         var i = 0;
     }

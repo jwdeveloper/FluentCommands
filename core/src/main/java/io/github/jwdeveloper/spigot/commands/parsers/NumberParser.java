@@ -1,11 +1,9 @@
 package io.github.jwdeveloper.spigot.commands.parsers;
 
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
-import io.github.jwdeveloper.spigot.commands.ArgumentType;
-import io.github.jwdeveloper.spigot.commands.data.events.ArgumentEvent;
-import io.github.jwdeveloper.spigot.commands.iterators.ArgumentIterator;
-import org.bukkit.command.CommandSender;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
+import io.github.jwdeveloper.spigot.commands.data.events.ArgumentParseEvent;
+import io.github.jwdeveloper.spigot.commands.data.events.ArgumentSuggestionEvent;
 
 import java.util.List;
 
@@ -18,7 +16,7 @@ public class NumberParser implements ArgumentType {
     }
 
     @Override
-    public ActionResult<Object> onParse(ArgumentEvent event) {
+    public ActionResult<Object> onParse(ArgumentParseEvent event) {
         var current = event.iterator().next();
         try {
             return ActionResult.success(Double.parseDouble(current));
@@ -28,7 +26,9 @@ public class NumberParser implements ArgumentType {
     }
 
     @Override
-    public ActionResult<List<String>> suggest(ArgumentEvent event) {
+    public ActionResult<List<String>> onSuggestion(ArgumentSuggestionEvent event) {
         return ActionResult.success(List.of("1.0"));
     }
+
+ 
 }

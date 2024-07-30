@@ -1,9 +1,9 @@
 package io.github.jwdeveloper.spigot.commands.builders;
 
-import io.github.jwdeveloper.spigot.commands.ArgumentTypesRegistry;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
-import io.github.jwdeveloper.spigot.commands.ArgumentType;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.functions.ArgumentParser;
 import lombok.Getter;
@@ -41,24 +41,24 @@ public class FluentArgumentBuilder implements ArgumentBuilder {
     }
 
     public ArgumentProperties build() {
-        argumentType.forEach(typesRegistry::add);
+        argumentType.forEach(typesRegistry::register);
         var argumentTypeName = properties.type();
         if (argumentTypeName.isEmpty()) {
             argumentTypeName = "Text";
         }
 
         var argumentType = typesRegistry
-                .find(argumentTypeName)
+                .findByName(argumentTypeName)
                 .orElseThrow(() -> new RuntimeException("Type not found: " + properties.type()));
 
         withParser(argumentType);
         if (properties.defaultValue() == null)
             withDefaultValue(argumentType.defaultValue());
 
-        if (properties.suggestions() == null)
+        if (properties.suggestion() == null)
             withSuggestions(argumentType);
 
-        if (properties.suggestions() == null)
+        if (properties.suggestion() == null)
             withSuggestions(event -> ActionResult.success(Collections.emptyList()));
 
         return properties;

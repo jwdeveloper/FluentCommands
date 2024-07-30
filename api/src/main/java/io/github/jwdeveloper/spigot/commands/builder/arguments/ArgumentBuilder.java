@@ -1,15 +1,13 @@
 package io.github.jwdeveloper.spigot.commands.builder.arguments;
 
-import io.github.jwdeveloper.spigot.commands.argumetns.SuggestionMode;
+import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
-import io.github.jwdeveloper.spigot.commands.ArgumentType;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.functions.ArgumentParser;
 import io.github.jwdeveloper.spigot.commands.functions.ArgumentSuggestions;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public interface ArgumentBuilder {
 
@@ -37,7 +35,7 @@ public interface ArgumentBuilder {
     }
 
     default ArgumentBuilder withSuggestions(ArgumentSuggestions suggestions) {
-        return withProperty(e -> e.suggestions(suggestions));
+        return withProperty(e -> e.suggestion(suggestions));
     }
 
     default ArgumentBuilder withSuggestions(String... suggestions) {

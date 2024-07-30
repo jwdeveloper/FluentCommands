@@ -26,7 +26,7 @@ public class TemplateMethodHandler {
         this.method = method;
     }
 
-    public void invokeEvent(Command command, CommandEvent event) {
+    public void invokeEvent(CommandEvent event) {
         argumentIndex = 0;
         this.commandEvent = event;
         try {
@@ -34,7 +34,7 @@ public class TemplateMethodHandler {
             var result = method.invoke(target, params);
             event.output(result);
         } catch (Exception e) {
-            throw new RuntimeException("Error while invoking command: " + command.name(), e);
+            throw new RuntimeException("Error while invoking command: " + event.command().name(), e);
         }
     }
 
@@ -44,7 +44,6 @@ public class TemplateMethodHandler {
         builder.registerSingleton(Command.class, container1 -> commandEvent.command());
         builder.registerSingleton(CommandSender.class, container1 -> commandEvent.sender());
         builder.registerSingleton(CommandExpression.class, container1 -> commandEvent.expression());
-        builder.registerSingleton(String[].class, container1 -> commandEvent.arguments());
         builder.configure(configuration ->
         {
             configuration.onInjection(this::handleArguments);

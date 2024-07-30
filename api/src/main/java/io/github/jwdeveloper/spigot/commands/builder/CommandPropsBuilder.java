@@ -6,64 +6,130 @@ import io.github.jwdeveloper.spigot.commands.data.SenderType;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
+/**
+ * Builder sets the command properties
+ *
+ * @param <T> builder type
+ */
 public interface CommandPropsBuilder<T> {
 
+    /**
+     * @return the properties object to direct modification
+     */
     CommandProperties properties();
 
+    /**
+     * @param properties action that modifies the command properties object
+     * @return self
+     */
     T withProperties(Consumer<CommandProperties> properties);
 
-    T withProperties(CommandProperties properties);
 
-    T self();
-
-    default T withUsageMessage(String usageMessage) {
-        properties().usageMessage(usageMessage);
-        return self();
-    }
-
+    /**
+     * Sets the aliases
+     *
+     * @param aliases the command description
+     * @return builder
+     */
     default T withAliases(String... aliases) {
-        properties().aliases(aliases);
-        return self();
+        return withProperties(commandProperties ->
+        {
+            properties().aliases(aliases);
+        });
     }
 
+    /**
+     * Sets the command label
+     *
+     * @param label the command description
+     * @return builder
+     */
     default T withLabel(String label) {
-        properties().label(label);
-        return self();
+        return withProperties(commandProperties ->
+        {
+            properties().label(label);
+        });
     }
 
-    default T withDebug(boolean isDebug) {
-        properties().debug(isDebug);
-        return self();
+
+    /**
+     * Use message best for the command documentation purpose
+     *
+     * @param usageMessage the command description
+     * @return builder
+     */
+    default T withUsageMessage(String usageMessage) {
+        return withProperties(commandProperties ->
+        {
+            properties().usageMessage(usageMessage);
+        });
     }
 
+    /**
+     * Short description best for the command documentation purpose
+     *
+     * @param shortDescription the command description
+     * @return builder
+     */
     default T withShortDescription(String shortDescription) {
-        properties().shortDescription(shortDescription);
-        return self();
+        return withProperties(commandProperties ->
+        {
+            properties().shortDescription(shortDescription);
+        });
     }
 
+    /**
+     * Description best for the command documentation purpose
+     *
+     * @param description the command description
+     * @return builder
+     */
     default T withDescription(String description) {
-        properties().description(description);
-        return self();
+        return withProperties(commandProperties ->
+        {
+            properties().description(description);
+        });
     }
 
-    default T withName(String name) {
-        properties().name(name);
-        return self();
+    /**
+     * Assign the permission to command.
+     * Permission is checked before command validation event
+     *
+     * @param permissions the permission value
+     * @return builder
+     */
+    default T withPermission(String permissions) {
+        return withProperties(commandProperties ->
+        {
+            commandProperties.permission(permissions);
+        });
     }
 
-    default T withPermissions(String... permissions) {
-        properties().permissions(Arrays.stream(permissions).toList());
-        return self();
+    /**
+     * Make command hide from the commands list
+     *
+     * @param isHide is command hide
+     * @return builder
+     */
+    default T withHideFromCommands(boolean isHide) {
+        return withProperties(commandProperties ->
+        {
+            commandProperties.hideFromCommands(isHide);
+        });
     }
 
-    default T withHideFromHints(boolean isHide) {
-        properties().hideFromHints(isHide);
-        return self();
-    }
-
+    /**
+     * Disable/Enable command from being active.
+     * Disabled command will not be visible in the Hints and Command list
+     *
+     * @param isActive the command active state
+     * @return builder
+     */
     default T withIsActive(boolean isActive) {
-        properties().active(isActive);
-        return self();
+        return withProperties(commandProperties ->
+        {
+            commandProperties.active(isActive);
+        });
     }
 
     /**
@@ -73,14 +139,25 @@ public interface CommandPropsBuilder<T> {
      * @return builder
      */
     default T withExcludedSenders(SenderType... senderTypes) {
-        properties().excludedSenders().addAll(Arrays.stream(senderTypes).toList());
-        return self();
+        return withProperties(commandProperties ->
+        {
+            properties().excludedSenders().addAll(Arrays.stream(senderTypes).toList());
+        });
     }
 
 
+    /**
+     * Sets the custom property name and value
+     *
+     * @param name  the property name
+     * @param value the property value
+     * @return builder
+     */
     default T withProperty(String name, Object value) {
-        properties().customProperties().put(name, value);
-        return self();
+        return withProperties(commandProperties ->
+        {
+            properties().customProperties().put(name, value);
+        });
     }
 
 }

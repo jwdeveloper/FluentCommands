@@ -29,15 +29,9 @@ public class CommandProperties {
 
     private String label = "";
 
-    private boolean debug = false;
-
-    private List<String> permissions = new ArrayList<>();
-
-    private boolean allParametersRequired = true;
+    private String permission = "";
 
     private boolean hideFromCommands = false;
-
-    private boolean hideFromHints = false;
 
     private boolean hideFromDocumentation = false;
 

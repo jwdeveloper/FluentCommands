@@ -3,13 +3,15 @@ package io.github.jwdeveloper.spigot.commands;
 import io.github.jwdeveloper.dependance.Dependance;
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.dependance.implementation.DependanceContainerBuilder;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builders.FluentCommandBuilder;
 import io.github.jwdeveloper.spigot.commands.listeners.DisableCommandsApiListener;
 import io.github.jwdeveloper.spigot.commands.parsers.*;
 import io.github.jwdeveloper.spigot.commands.services.*;
 import io.github.jwdeveloper.spigot.commands.templates.FluentTemplateCommand;
-import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternExpressionService;
+import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternParserService;
+import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
@@ -42,14 +44,15 @@ public class CommandsFramework {
 
         var builder = Dependance.newContainer();
         builder.registerSingleton(Plugin.class, plugin);
-        builder.registerSingleton(Commands.class, FluentCommandsApi.class);
+        builder.registerSingleton(Commands.class, FluentCommands.class);
         builder.registerSingleton(CommandsRegistry.class, FluentCommandsRegistry.class);
         builder.registerSingleton(ArgumentTypesRegistry.class, FluentArgumentTypesRegistry.class);
         builder.registerTransient(CommandBuilder.class, FluentCommandBuilder.class);
         builder.registerTransient(MessagesService.class, FluentMessageService.class);
         builder.registerTransient(TemplateCommand.class, FluentTemplateCommand.class);
 
-        builder.registerSingleton(PatternExpressionService.class);
+        builder.registerTransient(PatternService.class);
+        builder.registerSingleton(PatternParserService.class);
         builder.registerSingleton(DisableCommandsApiListener.class);
 
 
@@ -74,16 +77,14 @@ public class CommandsFramework {
         var typesContainer = containerBuilder.build();
 
         var argumentTypesRegistry = container.find(ArgumentTypesRegistry.class);
-
-        argumentTypesRegistry.add(new EnumTypeParser(EntityType.class,"entity"));
-        argumentTypesRegistry.add(new EnumTypeParser(Sound.class,"sound"));
-        argumentTypesRegistry.add(new EnumTypeParser(Particle.class,"particle"));
-        argumentTypesRegistry.add(new EnumTypeParser(ChatColor.class,"color"));
+        argumentTypesRegistry.register(new EnumTypeParser(EntityType.class, "entity"));
+        argumentTypesRegistry.register(new EnumTypeParser(Sound.class, "sound"));
+        argumentTypesRegistry.register(new EnumTypeParser(Particle.class, "particle"));
+        argumentTypesRegistry.register(new EnumTypeParser(ChatColor.class, "color"));
         defaultArgumentTypes.forEach((e) ->
         {
-            argumentTypesRegistry.add(typesContainer.find(e));
+            argumentTypesRegistry.register(typesContainer.find(e));
         });
-
         return api();
     }
 

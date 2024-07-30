@@ -29,12 +29,11 @@ public class ValidationServiceTest {
 
     @Test
     public void testHasSenderPermissions_PlayerWithPermission() {
-        List<String> permissions = List.of("permission1", "permission2");
 
         when(playerMock.hasPermission("permission1")).thenReturn(true);
         when(playerMock.hasPermission("permission2")).thenReturn(true);
 
-        ActionResult<CommandSender> result = service.hasSenderPermissions(playerMock, permissions);
+        ActionResult<CommandSender> result = service.hasSenderPermissions(playerMock, "permission1");
 
         assertTrue(result.isSuccess());
         assertEquals(playerMock, result.getValue());
@@ -42,12 +41,10 @@ public class ValidationServiceTest {
 
     @Test
     public void testHasSenderPermissions_PlayerWithoutPermission() {
-        List<String> permissions = List.of("permission1", "permission2");
-
         when(playerMock.hasPermission("permission1")).thenReturn(true);
         when(playerMock.hasPermission("permission2")).thenReturn(false);
 
-        ActionResult<CommandSender> result = service.hasSenderPermissions(playerMock, permissions);
+        ActionResult<CommandSender> result = service.hasSenderPermissions(playerMock, "permission1");
 
         assertFalse(result.isSuccess());
         assertEquals("permission2", result.getMessage());
@@ -56,7 +53,7 @@ public class ValidationServiceTest {
     @Test
     public void testHasSenderPermissions_NonPlayerSender() {
         var permissions = List.of("permission1", "permission2");
-        var result = service.hasSenderPermissions(commandSenderMock, permissions);
+        var result = service.hasSenderPermissions(commandSenderMock, "permission1");
         assertTrue(result.isSuccess());
     }
 

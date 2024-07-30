@@ -3,7 +3,7 @@ package io.github.jwdeveloper.spigot.commands.services;
 import io.github.jwdeveloper.spigot.commands.Commands;
 import io.github.jwdeveloper.spigot.commands.CommandsFramework;
 import io.github.jwdeveloper.spigot.commands.CommandsRegistry;
-import io.github.jwdeveloper.spigot.commands.annotations.FArgument;
+import io.github.jwdeveloper.spigot.commands.annotations.FCommandArgument;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommand;
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.mocks.CommandsRegistryMock;
@@ -87,7 +87,7 @@ public class ExpressionServiceTests {
     }
 
     @FCommand(pattern = "/player <!name:text> <!age:number> <!animal:entity> <!position:location>")
-    @FArgument(name = "name", suggestions = "suggest")
+    @FCommandArgument(name = "name", suggestions = "suggest")
     public void defaultCommand(Player player) {
 
     }

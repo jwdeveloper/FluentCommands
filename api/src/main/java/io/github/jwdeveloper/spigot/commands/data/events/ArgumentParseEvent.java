@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 
 @Data
 @Accessors(fluent = true)
-public class ArgumentEvent
+public class ArgumentParseEvent
 {
     private Command command;
     private ArgumentProperties argument;

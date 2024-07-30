@@ -1,29 +1,46 @@
 package io.github.jwdeveloper.spigot.commands;
 
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
+import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternService;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class FluentCommandsApi implements Commands {
+public class FluentCommands implements Commands {
     private final CommandsRegistry commandsRegistry;
     private final DependanceContainer container;
     private final TemplateCommand commandsTemplate;
+    private final ArgumentTypesRegistry argumentTypesRegistry;
+    private final PatternService patternService;
 
-    public FluentCommandsApi(CommandsRegistry commandsRegistry,
-                             DependanceContainer container,
-                             TemplateCommand commandsTemplate) {
+    public FluentCommands(CommandsRegistry commandsRegistry,
+                          DependanceContainer container,
+                          ArgumentTypesRegistry argumentTypesRegistry,
+                          TemplateCommand commandsTemplate,
+                          PatternService patternService) {
         this.commandsRegistry = commandsRegistry;
         this.container = container;
         this.commandsTemplate = commandsTemplate;
+        this.patternService = patternService;
+        this.argumentTypesRegistry = argumentTypesRegistry;
+    }
+
+    @Override
+    public ArgumentTypesRegistry argumentTypes() {
+        return argumentTypesRegistry;
     }
 
     @Override
     public CommandBuilder create(String pattern) {
-        return create().withName(pattern);
+        var result = patternService.getCommandBuilder(pattern, create());
+        if (result.isFailed()) {
+            throw new RuntimeException(result.getMessage());
+        }
+        return result.getValue();
     }
 
     @Override
@@ -31,7 +48,6 @@ public class FluentCommandsApi implements Commands {
         return commandsTemplate.templateToBuilder(templateObject, create());
     }
 
-    @Override
     public CommandBuilder create() {
         return container.find(CommandBuilder.class);
     }

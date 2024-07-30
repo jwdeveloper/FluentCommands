@@ -1,11 +1,12 @@
 package io.github.jwdeveloper.spigot.commands.templates.expressions;
 
+import io.github.jwdeveloper.dependance.injector.api.util.Pair;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatternExpressionService {
+public class PatternParserService {
     private PatternTokenizer iterator;
 
     public record CommandNode(String name, List<String> namesChain, List<ArgumentNode> arguments) {
@@ -15,6 +16,7 @@ public class PatternExpressionService {
                                String type,
                                boolean required,
                                List<String> suggestions,
+                               ArrayList<Pair<String, String>> properties,
                                String defaultValue) {
     }
 
@@ -72,7 +74,11 @@ public class PatternExpressionService {
             suggestions = getSuggestions();
         }
         var defaultValue = getProperty("?", "");
-        return new ArgumentNode(name, type, required, suggestions, defaultValue);
+        var properties = new ArrayList<Pair<String, String>>();
+        while (iterator.isNext("(")) {
+            properties.add(getProperty());
+        }
+        return new ArgumentNode(name, type, required, suggestions, properties, defaultValue);
     }
 
     private String getProperty(String symbol, String defaultValue) {
@@ -84,15 +90,20 @@ public class PatternExpressionService {
         return result;
     }
 
+    private Pair<String, String> getProperty() {
+        iterator.nextOrThrow("(");
+        var name = iterator.next();
+        iterator.nextOrThrow(":");
+        var value = getName();
+        iterator.nextOrThrow(")");
+        return new Pair<String, String>(name, value);
+    }
+
     private List<String> getSuggestions() {
         var result = new ArrayList<String>();
         iterator.nextOrThrow("[");
         while (iterator.hasNext()) {
-            var name = iterator.next();
-            if (iterator.isNext("(")) {
-                iterator.nextOrThrow("(");
-                iterator.nextOrThrow(")");
-            }
+            var name = getName();
             result.add(name);
             if (iterator.isNext("]")) {
                 break;
@@ -101,5 +112,14 @@ public class PatternExpressionService {
         }
         iterator.nextOrThrow("]");
         return result;
+    }
+
+    private String getName() {
+        var name = iterator.next();
+        if (iterator.isNext("(")) {
+            iterator.nextOrThrow("(");
+            iterator.nextOrThrow(")");
+        }
+        return name;
     }
 }

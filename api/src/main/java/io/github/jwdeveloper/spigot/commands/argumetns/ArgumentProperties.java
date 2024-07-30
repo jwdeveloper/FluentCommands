@@ -1,5 +1,6 @@
 package io.github.jwdeveloper.spigot.commands.argumetns;
 
+import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
 import io.github.jwdeveloper.spigot.commands.functions.ArgumentParser;
 import io.github.jwdeveloper.spigot.commands.functions.ArgumentSuggestions;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class ArgumentProperties {
     private boolean required;
 
     private ArgumentParser parser;
-    private ArgumentSuggestions suggestions;
+    private ArgumentSuggestions suggestion;
     private SuggestionMode suggestionMode = SuggestionMode.TYPE;
     private Map<String, Object> properties = new HashMap<>();
 }

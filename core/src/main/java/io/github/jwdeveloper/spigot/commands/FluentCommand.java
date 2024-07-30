@@ -40,7 +40,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] arguments) {
-        return this.execute(sender, commandLabel, arguments).isSuccess();
+        return this.executeCommand(sender, commandLabel, arguments).isSuccess();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
         return Optional.ofNullable(childrenByName.get(name));
     }
 
-    public ActionResult<CommandEvent> execute(CommandSender sender, String commandLabel, String[] arguments) {
+    public ActionResult<CommandEvent> executeCommand(CommandSender sender, String commandLabel, String[] arguments) {
         var result = commandService.execute(this, sender, commandLabel, arguments);
         if (result.isFailed()) {
             sender.sendMessage(result.getMessage());
@@ -63,8 +63,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
 
     @Override
     public ActionResult<List<String>> executeHint(CommandSender sender, String alias, String... arguments) {
-        var target = commandService.targetedCommand(this, arguments);
-        var result = commandService.executeTab(target.getCommand(), sender, alias, target.getArguments(), arguments);
+        var result = commandService.executeTab(this, sender, alias,  arguments);
         return ActionResult.success(result);
     }
 

@@ -2,8 +2,9 @@ package io.github.jwdeveloper.spigot.commands.parsers;
 
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.ArgumentType;
-import io.github.jwdeveloper.spigot.commands.data.events.ArgumentEvent;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
+import io.github.jwdeveloper.spigot.commands.data.events.ArgumentParseEvent;
+import io.github.jwdeveloper.spigot.commands.data.events.ArgumentSuggestionEvent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,7 @@ public class EnumParser implements ArgumentType {
     }
 
     @Override
-    public ActionResult<Object> onParse(ArgumentEvent event) {
+    public ActionResult<Object> onParse(ArgumentParseEvent event) {
         try {
             var iterator = event.iterator();
             var type = getEnumType(event.argument());
@@ -33,13 +34,13 @@ public class EnumParser implements ArgumentType {
     }
 
     @Override
-    public ActionResult<List<String>> suggest(ArgumentEvent event) {
+    public ActionResult<List<String>> onSuggestion(ArgumentSuggestionEvent event) {
         var enumResult = getEnumType(event.argument());
         if (enumResult.isFailed()) {
             return enumResult.cast();
         }
         var _enum = enumResult.getValue();
-        var value = event.iterator().current();
+        var value = event.rawValue();
         var enums = Arrays.stream(_enum.getEnumConstants())
                 .map(Enum::name)
                 .filter(e -> e.contains(value))

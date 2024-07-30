@@ -21,11 +21,11 @@ public interface Command {
 
     Optional<Command> child(String name);
 
-    ActionResult<CommandEvent> execute(CommandSender sender, String commandLabel, String... arguments);
+    ActionResult<CommandEvent> executeCommand(CommandSender sender, String commandLabel, String... arguments);
 
 
-    default ActionResult<CommandEvent> execute(String... arguments) {
-        return execute(Bukkit.getConsoleSender(), "", arguments);
+    default ActionResult<CommandEvent> executeCommand(String... arguments) {
+        return executeCommand(Bukkit.getConsoleSender(), "", arguments);
     }
 
     ActionResult<List<String>> executeHint(CommandSender sender, String alias, String... args);

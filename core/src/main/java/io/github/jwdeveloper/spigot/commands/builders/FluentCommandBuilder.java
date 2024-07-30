@@ -1,7 +1,7 @@
 package io.github.jwdeveloper.spigot.commands.builders;
 
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
-import io.github.jwdeveloper.spigot.commands.ArgumentTypesRegistry;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.CommandsRegistry;
 import io.github.jwdeveloper.spigot.commands.FluentCommand;
@@ -9,11 +9,13 @@ import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
-import io.github.jwdeveloper.spigot.commands.functions.CommandEventAction;
+import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
+import io.github.jwdeveloper.spigot.commands.data.events.CommandValidationEvent;
 import io.github.jwdeveloper.spigot.commands.services.*;
 import io.github.jwdeveloper.spigot.commands.services.CommandParser;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.bukkit.command.CommandSender;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -47,20 +49,21 @@ public class FluentCommandBuilder implements CommandBuilder {
     @Override
     public CommandBuilder withProperties(Consumer<CommandProperties> action) {
         action.accept(properties);
-        return self();
+        return this;
     }
 
     @Override
-    public CommandBuilder withProperties(CommandProperties properties) {
-        this.properties = properties;
-        return self();
+    public CommandBuilder onValidation(Consumer<CommandValidationEvent> action) {
+        //eventsService.subscribe();
+        return this;
     }
 
     @Override
-    public CommandBuilder onEvent(Class<?> senderType, CommandEventAction<?> action) {
+    public <E extends CommandSender> CommandBuilder onEvent(Class<?> senderType, Consumer<CommandEvent<E>> action) {
         eventsService.subscribe(senderType, action);
-        return self();
+        return this;
     }
+
 
 
     @Override
@@ -74,7 +77,7 @@ public class FluentCommandBuilder implements CommandBuilder {
     @Override
     public CommandBuilder subCommand(String name) {
         var builder = subCommadnsBuilders.computeIfAbsent(name, s -> container.find(CommandBuilder.class));
-        builder.withName(name);
+        builder.properties().name(name);
         return builder;
     }
 
@@ -96,16 +99,10 @@ public class FluentCommandBuilder implements CommandBuilder {
     }
 
     @Override
-    public CommandBuilder addArgument(String name, Consumer<ArgumentBuilder> action) {
-        action.accept(argument(name));
-        return self();
-    }
-
-    @Override
-    public CommandBuilder self() {
+    public CommandBuilder addArgument(String name, Consumer<ArgumentBuilder> builder) {
+        builder.accept(argument(name));
         return this;
     }
-
 
     @Override
     public Command build() {

@@ -17,11 +17,6 @@ public class ValidationService {
     }
 
     public ActionResult<Command> validateCommand(Command command, CommandSender sender, String[] args) {
-        var argumentsCheck = checkRequiredArguments(command, args);
-        if (argumentsCheck.isFailed()) {
-            return ActionResult.failed(argumentsCheck.getMessage());
-        }
-
         if (!command.properties().active()) {
             return ActionResult.failed(messagesService.inactiveCommand(command.name()));
         }
@@ -30,29 +25,28 @@ public class ValidationService {
             return ActionResult.failed(messagesService.noSenderAccess(accessResult.getMessage()));
         }
 
-        var permissionResult = hasSenderPermissions(sender, command.properties().permissions());
+        var permissionResult = hasSenderPermissions(sender, command.properties().permission());
         if (permissionResult.isFailed()) {
             return ActionResult.failed(messagesService.insufficientPermissions(permissionResult.getMessage()));
         }
+
+
         return ActionResult.success(command);
     }
 
-    public ActionResult<CommandSender> hasSenderPermissions(CommandSender sender, List<String> permissions) {
+    public ActionResult<CommandSender> hasSenderPermissions(CommandSender sender, String permissions) {
         if (!(sender instanceof Player player)) {
             return ActionResult.success();
         }
 
-        for (String permission : permissions) {
-            if (!player.hasPermission(permission)) {
-                return ActionResult.failed(sender, permission);
-            }
+        if (!player.hasPermission(permissions)) {
+            return ActionResult.failed(sender, permissions);
         }
 
         return ActionResult.success(sender);
     }
 
     public ActionResult<CommandSender> isSenderEnabled(CommandSender sender, List<SenderType> senderTypes) {
-
         for (var accessType : senderTypes) {
             var isDisabled = switch (accessType) {
                 case PLAYER -> sender instanceof Player;
@@ -68,15 +62,4 @@ public class ValidationService {
         return ActionResult.success(sender);
     }
 
-    public ActionResult<String> checkRequiredArguments(Command command, String[] args) {
-        var arguments = command.arguments();
-        var inputSize = args.length - 1;
-        for (var index = 0; index < arguments.size(); index++) {
-            var argument = arguments.get(index);
-            if (argument.required() && index > inputSize) {
-                return ActionResult.failed("Argument " + argument.name() + " is required!");
-            }
-        }
-        return ActionResult.success();
-    }
 }

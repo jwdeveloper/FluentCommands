@@ -1,18 +1,14 @@
 package io.github.jwdeveloper.spigot.commands.templates;
 
-import io.github.jwdeveloper.spigot.commands.annotations.FArgumentType;
 import io.github.jwdeveloper.spigot.commands.annotations.FCommand;
-import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternExpressionService;
+import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternParserService;
 import io.github.jwdeveloper.spigot.commands.templates.expressions.PatternTokenizer;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @FCommand(name = "spawn")
@@ -32,7 +28,6 @@ public class PatterIteratorTests {
     }
 
 
-    @FArgumentType(name = "Sound", cache = true)
     public List<String> sounds(String input) {
         return Arrays.stream(Sound.values())
                 .filter(e -> e.name().contains(input))
@@ -51,7 +46,7 @@ public class PatterIteratorTests {
             System.out.println(out);
         }
 
-        var expression = new PatternExpressionService();
+        var expression = new PatternParserService();
         var result = expression.resolve(input);
 
         var i = 0;

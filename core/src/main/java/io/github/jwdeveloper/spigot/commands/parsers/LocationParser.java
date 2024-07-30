@@ -1,16 +1,11 @@
 package io.github.jwdeveloper.spigot.commands.parsers;
 
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
-import io.github.jwdeveloper.spigot.commands.ArgumentType;
-import io.github.jwdeveloper.spigot.commands.data.events.ArgumentEvent;
-import io.github.jwdeveloper.spigot.commands.iterators.ArgumentIterator;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
+import io.github.jwdeveloper.spigot.commands.data.events.ArgumentParseEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
-
-import java.util.List;
 
 public class LocationParser implements ArgumentType {
     private NumberParser numberParser;
@@ -25,7 +20,7 @@ public class LocationParser implements ArgumentType {
     }
 
     @Override
-    public ActionResult<Object> onParse(ArgumentEvent event) {
+    public ActionResult<Object> onParse(ArgumentParseEvent event) {
         var world = Bukkit.getWorlds().get(0);
         if (event.sender() instanceof Entity entity) {
             world = entity.getWorld();

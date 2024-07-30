@@ -17,22 +17,20 @@ import org.bukkit.entity.Player;
 public class CommandEvent<T extends CommandSender> {
 
 
-    private T sender;
-    private String[] arguments;
-    private CommandExpression expression;
-    private DependanceContainer container;
-    private Command command;
+    private final T sender;
+    private final Command command;
+    private final CommandExpression expression;
+    private final DependanceContainer container;
+
     @Setter
     private Object output;
 
 
     public CommandEvent(T sender,
-                        String[] arguments,
                         CommandExpression argumentsResult,
                         DependanceContainer container,
                         Command command) {
         this.sender = sender;
-        this.arguments = arguments;
         this.expression = argumentsResult;
         this.container = container;
         this.command = command;
@@ -43,12 +41,6 @@ public class CommandEvent<T extends CommandSender> {
         return expression.invokedCommand().getArguments().size();
     }
 
-    public String argument(int argument) {
-        if (argument > argumentCount() - 1) {
-            return "";
-        }
-        return arguments[argument];
-    }
 
     public <T> T getArgument(int argument, Class<T> type) {
         if (argument > argumentCount() - 1) {
@@ -88,4 +80,6 @@ public class CommandEvent<T extends CommandSender> {
     public Location getLocation(int argument) {
         return getArgument(argument, Location.class);
     }
+
+
 }
