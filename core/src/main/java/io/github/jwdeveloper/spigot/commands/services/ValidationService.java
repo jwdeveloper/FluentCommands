@@ -39,6 +39,9 @@ public class ValidationService {
             return ActionResult.success();
         }
 
+        if (permissions == null || permissions.isEmpty() || permissions.isBlank())
+            return ActionResult.success();
+
         if (!player.hasPermission(permissions)) {
             return ActionResult.failed(sender, permissions);
         }

@@ -17,7 +17,7 @@ public interface ArgumentType extends ArgumentParser, ArgumentSuggestions
         return "";
     }
 
-    default    ActionResult<List<String>> onSuggestion(ArgumentSuggestionEvent event) {
+    default  ActionResult<List<String>> onSuggestion(ArgumentSuggestionEvent event) {
         return ActionResult.success(Collections.emptyList());
     }
 }

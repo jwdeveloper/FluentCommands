@@ -3,6 +3,7 @@ package io.github.jw.spigot.mc.tiktok.example;
 
 import io.github.jwdeveloper.spigot.commands.Commands;
 import io.github.jwdeveloper.spigot.commands.CommandsFramework;
+import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,6 +18,9 @@ public final class Example extends JavaPlugin {
     @Override
     public void onEnable() {
         Commands commandsApi = CommandsFramework.enable(this);
+
+        commandsApi.create(new PluginCommand())
+                .register();
 
         commandsApi.argumentTypes()
                 .create("BlockType")
@@ -40,8 +44,7 @@ public final class Example extends JavaPlugin {
                 })
                 .register();
 
-        commandsApi.create(new PluginCommand());
-        commandsApi.create("/spawn <radios:Number> <name:Text>")
+        commandsApi.create("/test <radios:Number> <name:BlockType>")
                 .onPlayerExecute(event ->
                 {
                     var radious = event.getDouble(0);

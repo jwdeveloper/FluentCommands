@@ -28,7 +28,7 @@ public interface Command {
         return executeCommand(Bukkit.getConsoleSender(), "", arguments);
     }
 
-    ActionResult<List<String>> executeHint(CommandSender sender, String alias, String... args);
+    ActionResult<List<String>> executeSuggestions(CommandSender sender, String alias, String... args);
 
     Optional<Command> parent();
 

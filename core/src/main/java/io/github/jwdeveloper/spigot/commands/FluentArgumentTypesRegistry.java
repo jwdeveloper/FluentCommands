@@ -1,5 +1,6 @@
 package io.github.jwdeveloper.spigot.commands;
 
+import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypeBuilder;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
@@ -25,7 +26,7 @@ public class FluentArgumentTypesRegistry implements ArgumentTypesRegistry {
 
     @Override
     public ArgumentTypeBuilder create(String name) {
-        return null;
+        return new FluentArgumentTypeBuilder(name, this);
     }
 
     @Override

@@ -13,7 +13,7 @@ import org.mockito.MockedStatic;
 
 import static org.mockito.Mockito.*;
 
-public class CommandTests {
+public abstract class CommandTests {
 
 
     public static void main(String[] args) {
@@ -27,6 +27,10 @@ public class CommandTests {
         spawn.executeCommand(args);
         jump.executeCommand(args);
     }
+
+
+
+
 
     Commands api;
 

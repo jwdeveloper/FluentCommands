@@ -3,10 +3,12 @@ package io.github.jwdeveloper.spigot.commands.services;
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.CommandsRegistry;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
 import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.events.ArgumentSuggestionEvent;
 import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
+import io.github.jwdeveloper.spigot.commands.data.expressions.ArgumentNode;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.bukkit.command.CommandSender;
@@ -63,7 +65,7 @@ public class CommandServices {
                                    String alias,
                                    String[] args) {
 
-        if (args.length == 0) {
+        if (args.length == 1 && !command.children().isEmpty()) {
             return command.children()
                     .stream()
                     .filter(e -> !e.properties().hideFromCommands())
@@ -71,24 +73,22 @@ public class CommandServices {
                     .toList();
         }
 
-        var expressionResult = expressionService.parse(command, sender, args);
-        if (expressionResult.isFailed()) {
-            return List.of();
+
+        var argumentResult = getArgument(command, sender, args);
+        var errorMessage = "";
+        if (argumentResult.getMessage() != null) {
+            errorMessage = " (" + argumentResult.getMessage() + ")";
         }
 
-
-        var expression = expressionResult.getValue();
-        var argumentNode = expression.invokedCommand().getLastArgument();
-        var argument = argumentNode.getArgument();
-
+        var argument = getArgument(command, sender, args).getOrThrow("Unable to find next argument!");
         if (argument.suggestionMode() == SuggestionMode.NAME) {
-            return List.of(argument.name());
+            return List.of(argument.name() + errorMessage);
         }
         if (argument.suggestionMode() == SuggestionMode.NONE) {
             return Collections.emptyList();
         }
         if (argument.suggestionMode() == SuggestionMode.TYPE) {
-            return List.of("<" + argument.type() + ">");
+            return List.of("<" + argument.type() + errorMessage + ">");
         }
 
         if (argument.suggestion() == null) {
@@ -96,7 +96,7 @@ public class CommandServices {
         }
 
         var argumentEvent = new ArgumentSuggestionEvent();
-        argumentEvent.argument(argumentNode.getArgument());
+        argumentEvent.argument(argument);
         argumentEvent.command(command);
         argumentEvent.sender(sender);
         argumentEvent.value(argumentEvent.value());
@@ -109,6 +109,25 @@ public class CommandServices {
         }
 
         return result.getValue();
+    }
+
+
+    private ActionResult<ArgumentProperties> getArgument(Command command,
+                                                         CommandSender sender,
+                                                         String[] args) {
+        var expressionResult = expressionService.parse(command, sender, args);
+        if (expressionResult.isSuccess()) {
+            var expression = expressionResult.getValue();
+            var argumentNode = expression.invokedCommand().getLastResolvedArgument();
+            return argumentNode.cast(ArgumentNode::getArgument);
+        }
+
+        if (command.arguments().isEmpty()) {
+            return ActionResult.failed("Not arguments found!");
+        }
+
+
+        return ActionResult.success(command.arguments().get(0), expressionResult.getMessage());
     }
 
 }

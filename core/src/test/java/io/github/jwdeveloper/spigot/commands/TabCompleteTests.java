@@ -56,7 +56,7 @@ public class TabCompleteTests {
                 })
                 .build();
 
-        var result = command.executeHint(sender,
+        var result = command.executeSuggestions(sender,
                 "",
                 "0", "1");
 

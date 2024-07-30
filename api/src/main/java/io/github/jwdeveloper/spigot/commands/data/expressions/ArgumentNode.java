@@ -10,4 +10,5 @@ import lombok.Data;
 public class ArgumentNode {
     private ArgumentProperties argument;
     private Object value;
+    private boolean defaultValue;
 }

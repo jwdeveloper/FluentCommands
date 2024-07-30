@@ -65,7 +65,6 @@ public class FluentCommandBuilder implements CommandBuilder {
     }
 
 
-
     @Override
     public Command register() {
         var command = build();
@@ -91,8 +90,14 @@ public class FluentCommandBuilder implements CommandBuilder {
 
     @Override
     public ArgumentBuilder argument(String name) {
-        var builder = argumentBuilders.computeIfAbsent(name, s ->
-                new FluentArgumentBuilder(new ArgumentProperties(), argumentTypesRegistry));
+
+        if (argumentBuilders.containsKey(name)) {
+            return argumentBuilders.get(name);
+        }
+
+        var builder =  new FluentArgumentBuilder(new ArgumentProperties(), argumentTypesRegistry);
+        argumentBuilders.put(name, builder);
+
         builder.withName(name);
         builder.withIndex(argumentBuilders.size());
         return builder;

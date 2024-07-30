@@ -40,4 +40,6 @@ public interface ArgumentTypeBuilder {
     }
 
     ArgumentType register();
+
+
 }

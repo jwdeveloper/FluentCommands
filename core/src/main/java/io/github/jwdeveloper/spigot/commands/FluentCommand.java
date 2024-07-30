@@ -62,14 +62,14 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
     }
 
     @Override
-    public ActionResult<List<String>> executeHint(CommandSender sender, String alias, String... arguments) {
+    public ActionResult<List<String>> executeSuggestions(CommandSender sender, String alias, String... arguments) {
         var result = commandService.executeTab(this, sender, alias,  arguments);
         return ActionResult.success(result);
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] arguments) {
-        var result = executeHint(sender, alias, arguments);
+        var result = executeSuggestions(sender, alias, arguments);
         if (result.isFailed()) {
             return Collections.emptyList();
         }

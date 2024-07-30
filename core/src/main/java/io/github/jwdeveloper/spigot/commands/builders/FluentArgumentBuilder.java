@@ -5,6 +5,7 @@ import io.github.jwdeveloper.spigot.commands.builder.arguments.ArgumentBuilder;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentType;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
+import io.github.jwdeveloper.spigot.commands.data.SuggestionMode;
 import io.github.jwdeveloper.spigot.commands.functions.ArgumentParser;
 import lombok.Getter;
 
@@ -16,13 +17,13 @@ public class FluentArgumentBuilder implements ArgumentBuilder {
     @Getter
     private final ArgumentProperties properties;
     private final Set<ArgumentType> argumentType;
-    private final ArgumentTypesRegistry typesRegistry;
+    private final ArgumentTypesRegistry argumentTypes;
 
     public FluentArgumentBuilder(ArgumentProperties properties,
                                  ArgumentTypesRegistry argumentTypesRegistry) {
         this.properties = properties;
         argumentType = new TreeSet<>();
-        typesRegistry = argumentTypesRegistry;
+        argumentTypes = argumentTypesRegistry;
     }
 
     @Override
@@ -41,19 +42,22 @@ public class FluentArgumentBuilder implements ArgumentBuilder {
     }
 
     public ArgumentProperties build() {
-        argumentType.forEach(typesRegistry::register);
+        argumentType.forEach(argumentTypes::register);
         var argumentTypeName = properties.type();
         if (argumentTypeName.isEmpty()) {
             argumentTypeName = "Text";
         }
 
-        var argumentType = typesRegistry
+        var argumentType = argumentTypes
                 .findByName(argumentTypeName)
                 .orElseThrow(() -> new RuntimeException("Type not found: " + properties.type()));
 
         withParser(argumentType);
         if (properties.defaultValue() == null)
             withDefaultValue(argumentType.defaultValue());
+
+        if (properties.suggestion() != null)
+            properties.suggestionMode(SuggestionMode.SUGGESTIONS);
 
         if (properties.suggestion() == null)
             withSuggestions(argumentType);

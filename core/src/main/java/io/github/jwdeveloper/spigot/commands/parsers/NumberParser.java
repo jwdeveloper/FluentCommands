@@ -19,6 +19,10 @@ public class NumberParser implements ArgumentType {
     public ActionResult<Object> onParse(ArgumentParseEvent event) {
         var current = event.iterator().next();
         try {
+            if (current.isEmpty()) {
+                return ActionResult.success(1.0d);
+            }
+
             return ActionResult.success(Double.parseDouble(current));
         } catch (Exception e) {
             return ActionResult.failed(e.getMessage());
@@ -30,5 +34,5 @@ public class NumberParser implements ArgumentType {
         return ActionResult.success(List.of("1.0"));
     }
 
- 
+
 }

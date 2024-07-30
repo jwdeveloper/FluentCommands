@@ -28,7 +28,7 @@ public class ValidationServiceTest {
     }
 
     @Test
-    public void testHasSenderPermissions_PlayerWithPermission() {
+    public void should_true_when_player_permission() {
 
         when(playerMock.hasPermission("permission1")).thenReturn(true);
         when(playerMock.hasPermission("permission2")).thenReturn(true);
@@ -40,19 +40,30 @@ public class ValidationServiceTest {
     }
 
     @Test
-    public void testHasSenderPermissions_PlayerWithoutPermission() {
+    public void should_false_when_player_no_permission() {
         when(playerMock.hasPermission("permission1")).thenReturn(true);
         when(playerMock.hasPermission("permission2")).thenReturn(false);
 
-        ActionResult<CommandSender> result = service.hasSenderPermissions(playerMock, "permission1");
+        ActionResult<CommandSender> result = service.hasSenderPermissions(playerMock, "permission2");
 
         assertFalse(result.isSuccess());
         assertEquals("permission2", result.getMessage());
     }
 
     @Test
-    public void testHasSenderPermissions_NonPlayerSender() {
-        var permissions = List.of("permission1", "permission2");
+    public void should_return_true_when_empty_permissions() {
+        var permissions = new ArrayList<String>();
+        permissions.add("");
+        permissions.add(" ");
+        permissions.add(null);
+        for (var permission : permissions) {
+            var result = service.hasSenderPermissions(commandSenderMock, permission);
+            assertTrue(result.isSuccess());
+        }
+    }
+
+    @Test
+    public void should_true_when_sender_no_player() {
         var result = service.hasSenderPermissions(commandSenderMock, "permission1");
         assertTrue(result.isSuccess());
     }

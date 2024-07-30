@@ -3,6 +3,7 @@ package io.github.jwdeveloper.spigot.commands.data;
 import lombok.Data;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 @Data
 public class ActionResult<T> {
@@ -25,6 +26,13 @@ public class ActionResult<T> {
     protected ActionResult(T object, boolean status, String message) {
         this(object, status);
         this.message = message;
+    }
+
+    public T getOrThrow(String message) {
+        if (value == null) {
+            throw new RuntimeException(message);
+        }
+        return value;
     }
 
     public boolean isFailed() {
@@ -50,6 +58,12 @@ public class ActionResult<T> {
     public <Output> ActionResult<Output> cast() {
         return new ActionResult<>(null, this.isSuccess(), this.getMessage());
     }
+
+    public <Output> ActionResult<Output> cast(Function<T, Output> converter) {
+        var value = this.value != null ? converter.apply(this.value) : null;
+        return new ActionResult<>(value, this.isSuccess(), this.getMessage());
+    }
+
 
     public static <Input, Output> ActionResult<Output> cast(ActionResult<Input> action, Output output) {
         return new ActionResult<>(output, action.isSuccess(), action.getMessage());

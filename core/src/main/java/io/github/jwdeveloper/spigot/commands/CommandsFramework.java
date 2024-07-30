@@ -3,6 +3,7 @@ package io.github.jwdeveloper.spigot.commands;
 import io.github.jwdeveloper.dependance.Dependance;
 import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.dependance.implementation.DependanceContainerBuilder;
+import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypeBuilder;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypesRegistry;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builders.FluentCommandBuilder;
@@ -47,6 +48,7 @@ public class CommandsFramework {
         builder.registerSingleton(Commands.class, FluentCommands.class);
         builder.registerSingleton(CommandsRegistry.class, FluentCommandsRegistry.class);
         builder.registerSingleton(ArgumentTypesRegistry.class, FluentArgumentTypesRegistry.class);
+        builder.registerTransient(ArgumentTypeBuilder.class, FluentArgumentTypeBuilder.class);
         builder.registerTransient(CommandBuilder.class, FluentCommandBuilder.class);
         builder.registerTransient(MessagesService.class, FluentMessageService.class);
         builder.registerTransient(TemplateCommand.class, FluentTemplateCommand.class);
