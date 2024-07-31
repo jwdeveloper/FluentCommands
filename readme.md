@@ -42,9 +42,10 @@ Join the support [discord](https://discord.gg/2hu6fPPeF7) and visit the `#progra
 1. Install the dependencie 
 ```xml
 <dependency>
-   <groupId>com.github.jwdeveloper.spigot.commands</groupId>
-   <artifactId>CommandsFramework</artifactId>
-   <version>1.0.0</version>
+    <groupId>io.github.jwdeveloper.spigot.commands</groupId>
+    <artifactId>core</artifactId>
+    <version>1.0.0</version>
+    <scope>compile</scope>
 </dependency>
 ```
 <br>
