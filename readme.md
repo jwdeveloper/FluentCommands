@@ -81,7 +81,7 @@ public final class Example extends JavaPlugin {
                 {
                     event.sender().sendMessage("This command can be only use by players!");
                 })
-                .buildAndRegister();
+                .register();
     }
 }
 ```
