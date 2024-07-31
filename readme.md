@@ -33,12 +33,12 @@ See the [documentation](https://jwdeveloper.github.io/FluentCommands/) to see mo
 Join the support [discord](https://discord.gg/2hu6fPPeF7) and visit the `#programming` channel for questions, contributions and ideas. Feel free to make pull requests with missing/new features, fixes, etc
 
 ## Getting started
-1. Install the package <a href="https://www.nuget.org/packages/InstaLiveDotNet/" target="blank" ><img src="https://img.shields.io/nuget/v/SoftCircuits.Silk.svg?style=flat-square" width="100px"  height="25px"></a>
+1. Install the dependencie 
 ```xml
 <dependency>
-	    <groupId>com.github.jwdeveloper.spigot.commands</groupId>
-	    <artifactId>CommandsFramework</artifactId>
-	    <version>1.0.0</version>
+   <groupId>com.github.jwdeveloper.spigot.commands</groupId>
+   <artifactId>CommandsFramework</artifactId>
+   <version>1.0.0</version>
 </dependency>
 ```
 <br>
