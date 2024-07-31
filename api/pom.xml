@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.jwdeveloper.spigot.commands</groupId>
-        <artifactId>FluentCommands</artifactId>
+        <artifactId>CommandsFramework</artifactId>
         <version>1.0.0</version>
     </parent>
 
