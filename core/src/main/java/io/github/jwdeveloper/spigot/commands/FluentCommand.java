@@ -1,5 +1,6 @@
 package io.github.jwdeveloper.spigot.commands;
 
+import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Accessors(fluent = true)
 public class FluentCommand extends org.bukkit.command.Command implements Command {
 
+    private final DependanceContainer container;
     private final CommandProperties properties;
     private final List<ArgumentProperties> arguments;
     private final List<Command> children;
@@ -29,13 +31,15 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
     public FluentCommand(CommandProperties properties,
                          List<ArgumentProperties> argumentProperties,
                          List<Command> children,
-                         CommandServices services) {
+                         CommandServices services,
+                         DependanceContainer dependanceContainer) {
         super(properties.name());
         this.properties = properties;
         this.arguments = argumentProperties;
         this.commandService = services;
         this.children = children;
         this.childrenByName = children.stream().collect(Collectors.toMap(Command::name, e -> e));
+        this.container = dependanceContainer;
     }
 
     @Override
@@ -63,7 +67,7 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
 
     @Override
     public ActionResult<List<String>> executeSuggestions(CommandSender sender, String alias, String... arguments) {
-        var result = commandService.executeTab(this, sender, alias,  arguments);
+        var result = commandService.executeTab(this, sender, alias, arguments);
         return ActionResult.success(result);
     }
 
@@ -88,6 +92,11 @@ public class FluentCommand extends org.bukkit.command.Command implements Command
     @Override
     public String name() {
         return properties.name();
+    }
+
+    @Override
+    public DependanceContainer container() {
+        return container;
     }
 
 }

@@ -1,5 +1,6 @@
 package io.github.jwdeveloper.spigot.commands.services;
 
+import io.github.jwdeveloper.dependance.injector.api.util.Pair;
 import io.github.jwdeveloper.spigot.commands.Command;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.expressions.CommandExpression;
@@ -7,8 +8,7 @@ import io.github.jwdeveloper.spigot.commands.data.expressions.CommandNode;
 import org.bukkit.command.CommandSender;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 public class ExpressionService {
 
@@ -20,44 +20,53 @@ public class ExpressionService {
         this.parser = commandParser;
     }
 
+
+    public List<Pair<Command, String[]>> getCommandsAndParams(Command command, String[] args) {
+        var result = new ArrayList<Pair<Command, String[]>>();
+        var currentCommand = command;
+        int startIndex = 0;
+        for (int i = 0; i < args.length; i++)
+        {
+            var currentArg = args[i];
+            if (currentCommand.hasChild(currentArg))
+            {
+                var commandArgs = Arrays.copyOfRange(args, startIndex, i);
+                result.add(new Pair<>(currentCommand, commandArgs));
+
+                currentCommand = currentCommand.child(currentArg).get();
+                startIndex = i + 1;
+            }
+        }
+        var commandArgs = Arrays.copyOfRange(args, startIndex, args.length);
+        result.add(new Pair<>(currentCommand, commandArgs));
+        return result;
+    }
+
     public ActionResult<CommandExpression> parse(
             Command command,
             CommandSender sender,
             String[] args) {
-        var parsedCommands = new ArrayList<CommandNode>();
-        var commandStartIndex = 0;
-        for (var index = 0; index < args.length; index++) {
-            var inputArgument = args[index];
-            if (!command.hasChild(inputArgument)) {
-                if (index != args.length - 1) {
-                    continue;
-                }
-                index = args.length;
-            }
+        var expression = new CommandExpression();
+        expression.setRawValue(args);
+        expression.setCommandNodes(new ArrayList<>());
 
-            var commandArgs = Arrays.copyOfRange(args, commandStartIndex, index);
-            var validationCheck = validationService.validateCommand(command, sender, commandArgs);
+        for (var pair : getCommandsAndParams(command, args)) {
+            command = pair.getKey();
+            args = pair.getValue();
+
+            var validationCheck = validationService.validateCommand(command, sender, args);
             if (validationCheck.isFailed()) {
                 return validationCheck.cast();
             }
 
-            var result = parser.parseCommand(command, sender, commandArgs);
+            var result = parser.parseCommand(command, sender, args);
             if (result.isFailed()) {
                 return (ActionResult) result;
             }
 
             var parsedValue = result.getValue();
-            parsedCommands.add(parsedValue);
-
-            if (index < args.length - 1) {
-                command = command.child(inputArgument).get();
-            }
-            commandStartIndex = index + 1;
+            expression.getCommandNodes().add(parsedValue);
         }
-
-        var expression = new CommandExpression();
-        expression.setRawValue(args);
-        expression.setCommandNodes(parsedCommands);
         return ActionResult.success(expression);
     }
 }

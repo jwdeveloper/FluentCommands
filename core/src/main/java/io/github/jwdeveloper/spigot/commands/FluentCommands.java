@@ -30,6 +30,8 @@ public class FluentCommands implements Commands {
         this.argumentTypesRegistry = argumentTypesRegistry;
     }
 
+
+
     @Override
     public Patterns patterns() {
         return null;

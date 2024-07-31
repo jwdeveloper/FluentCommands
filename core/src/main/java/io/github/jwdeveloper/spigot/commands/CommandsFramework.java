@@ -97,6 +97,8 @@ public class CommandsFramework {
         return container.find(Commands.class);
     }
 
+
+
     public static void disable() {
         if (!isEnabled()) {
             throw new RuntimeException("Fluent commands has not been enabled");

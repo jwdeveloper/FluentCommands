@@ -131,12 +131,14 @@ public class FluentCommandBuilder implements CommandBuilder {
                 .registerSingleton(CommandParser.class)
                 .registerSingleton(Command.class, con ->
                 {
+                    var container = (DependanceContainer)con.find(DependanceContainer.class);
                     var services = (CommandServices) con.find(CommandServices.class);
                     return new FluentCommand(
                             properties,
                             arguments,
                             children,
-                            services);
+                            services,
+                            container);
                 })
                 .build();
         return commandContainer.find(Command.class);

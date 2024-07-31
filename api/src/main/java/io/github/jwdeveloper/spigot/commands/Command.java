@@ -1,5 +1,6 @@
 package io.github.jwdeveloper.spigot.commands;
 
+import io.github.jwdeveloper.dependance.api.DependanceContainer;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import io.github.jwdeveloper.spigot.commands.data.CommandProperties;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentProperties;
@@ -35,4 +36,6 @@ public interface Command {
     boolean hasParent();
 
     String name();
+
+    DependanceContainer container();
 }
