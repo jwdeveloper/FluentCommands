@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PatternParser {
-    private PatternTokenizer iterator;
+
 
     public record CommandNode(String name, List<String> namesChain, List<ArgumentNode> arguments) {
     }
@@ -27,6 +27,9 @@ public class PatternParser {
             return properties.stream().filter(e -> e.getKey().equals(property)).findFirst().get().getValue();
         }
     }
+
+    private PatternTokenizer iterator;
+
 
     public ActionResult<CommandNode> resolve(String input) {
         iterator = new PatternTokenizer(input);

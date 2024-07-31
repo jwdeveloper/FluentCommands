@@ -15,7 +15,9 @@ public final class Example extends JavaPlugin {
     @Override
     public void onEnable() {
         Commands commands = CommandsFramework.enable(this);
-        commands.create("/hello <name:Text> <age:number> <job:Text[Miner, Fisherman, Farmer]>")
+
+
+        commands.create("/hello <name:Text(dn,dt)> <age:number(dn)> <job:Text[Miner, Fisherman, Farmer](ds)>")
                 .onPlayerExecute(event ->
                 {
                     event.sender().sendMessage("You called the hello command");

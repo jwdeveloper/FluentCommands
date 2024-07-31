@@ -7,6 +7,7 @@ import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypeBuilder;
 import io.github.jwdeveloper.spigot.commands.argumetns.ArgumentTypes;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builders.FluentCommandBuilder;
+import io.github.jwdeveloper.spigot.commands.data.DisplayAttribute;
 import io.github.jwdeveloper.spigot.commands.listeners.DisableCommandsApiListener;
 import io.github.jwdeveloper.spigot.commands.parsers.*;
 import io.github.jwdeveloper.spigot.commands.patterns.FluentPatterns;
@@ -39,6 +40,25 @@ public class CommandsFramework {
         });
     }
 
+    public static Commands api() {
+        if (!isEnabled()) {
+            throw new RuntimeException("Fluent commands has not been enabled");
+        }
+        return container.find(Commands.class);
+    }
+
+    public static void disable() {
+        if (!isEnabled()) {
+            throw new RuntimeException("Fluent commands has not been enabled");
+        }
+
+        var listener = container.find(DisableCommandsApiListener.class);
+        PluginDisableEvent.getHandlerList().unregister(listener);
+        api().removeAll();
+        container = null;
+    }
+
+
     public static Commands enable(Plugin plugin, Consumer<DependanceContainerBuilder> action) {
 
         if (isEnabled()) {
@@ -50,11 +70,13 @@ public class CommandsFramework {
         builder.registerSingleton(Commands.class, FluentCommands.class);
         builder.registerSingleton(CommandsRegistry.class, FluentCommandsRegistry.class);
         builder.registerSingleton(ArgumentTypes.class, FluentArgumentTypesRegistry.class);
+        builder.registerSingleton(Patterns.class, FluentPatterns.class);
+
         builder.registerTransient(ArgumentTypeBuilder.class, FluentArgumentTypeBuilder.class);
         builder.registerTransient(CommandBuilder.class, FluentCommandBuilder.class);
         builder.registerTransient(MessagesService.class, FluentMessageService.class);
         builder.registerTransient(TemplateCommand.class, FluentTemplateCommand.class);
-        builder.registerTransient(Patterns.class, FluentPatterns.class);
+
 
         builder.registerTransient(PatternService.class);
         builder.registerSingleton(PatternParser.class);
@@ -62,11 +84,7 @@ public class CommandsFramework {
 
 
         action.accept(builder);
-
         container = builder.build();
-
-        var listener = container.find(DisableCommandsApiListener.class);
-        Bukkit.getPluginManager().registerEvents(listener, plugin);
 
 
         var defaultArgumentTypes =
@@ -90,25 +108,28 @@ public class CommandsFramework {
         {
             argumentTypesRegistry.register(typesContainer.find(e));
         });
+
+
+        var patterns = container.find(Patterns.class);
+        patterns.mapProperty("dn", (value, builder1) -> builder1.withDisplayName());
+        patterns.mapProperty("dt", (value, builder1) -> builder1.withDisplayType());
+        patterns.mapProperty("dd", (value, builder1) -> builder1.withDisplayDescription());
+        patterns.mapProperty("de", (value, builder1) -> builder1.withDisplayError());
+        patterns.mapProperty("ds", (value, builder1) -> builder1.withDisplaySuggestions());
+        patterns.mapProperty("d-", (value, builder1) -> builder1.withDisplayNone());
+        patterns.mapProperty("da", (value, builder1) -> builder1.withDisplayAttribute(DisplayAttribute.values()));
+
+
+        patterns.mapProperty("d", (value, builder1) -> builder1.withDescription(value));
+        patterns.mapProperty("n", (value, builder1) -> builder1.withName(value));
+        patterns.mapProperty("t", (value, builder1) -> builder1.withType(value));
+        patterns.mapProperty("r", (value, builder1) -> builder1.withRequired());
+
+        var listener = container.find(DisableCommandsApiListener.class);
+        Bukkit.getPluginManager().registerEvents(listener, plugin);
+
         return api();
     }
 
-    public static Commands api() {
-        if (!isEnabled()) {
-            throw new RuntimeException("Fluent commands has not been enabled");
-        }
-        return container.find(Commands.class);
-    }
 
-
-    public static void disable() {
-        if (!isEnabled()) {
-            throw new RuntimeException("Fluent commands has not been enabled");
-        }
-
-        var listener = container.find(DisableCommandsApiListener.class);
-        PluginDisableEvent.getHandlerList().unregister(listener);
-        api().removeAll();
-        container = null;
-    }
 }

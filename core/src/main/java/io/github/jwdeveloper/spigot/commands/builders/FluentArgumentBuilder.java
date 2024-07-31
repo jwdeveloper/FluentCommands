@@ -52,7 +52,11 @@ public class FluentArgumentBuilder implements ArgumentBuilder {
                 .findByName(argumentTypeName)
                 .orElseThrow(() -> new RuntimeException("Type not found: " + properties.type()));
 
-        withDisplayAttribute(DisplayAttribute.TYPE, DisplayAttribute.ERROR);
+
+        if (properties.displayAttributes().isEmpty()) {
+            withDisplayAttribute(DisplayAttribute.NAME, DisplayAttribute.TYPE, DisplayAttribute.ERROR);
+        }
+
         withParser(argumentType);
         if (properties.defaultValue() == null)
             withDefaultValue(argumentType.defaultValue());
