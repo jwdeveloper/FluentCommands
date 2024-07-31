@@ -16,7 +16,7 @@ public class Example1Tests extends CommandsTestBase {
 
         var value = commandResult.getValue();
         Assertions.assertEquals(1, value.size());
-        Assertions.assertEquals("<Number>", value.get(0));
+        Assertions.assertEquals("<age:Number>", value.get(0));
     }
 
 
@@ -42,7 +42,7 @@ public class Example1Tests extends CommandsTestBase {
 
         var value = commandResult.getValue();
         Assertions.assertEquals(1, value.size());
-        Assertions.assertEquals("<Number (It's number, not text!)>", value.get(0));
+        Assertions.assertEquals("<age:Number (It's number, not text!)>", value.get(0));
     }
 
 
@@ -55,7 +55,7 @@ public class Example1Tests extends CommandsTestBase {
 
         var value = commandResult.getValue();
         Assertions.assertEquals(1, value.size());
-        Assertions.assertEquals("<Text (Unmatched quotation marks.)>", value.get(0));
+        Assertions.assertEquals("<name:Text (Unmatched quotation marks.)>", value.get(0));
     }
 
 }
