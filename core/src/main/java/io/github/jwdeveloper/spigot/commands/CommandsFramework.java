@@ -9,9 +9,11 @@ import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.builders.FluentCommandBuilder;
 import io.github.jwdeveloper.spigot.commands.listeners.DisableCommandsApiListener;
 import io.github.jwdeveloper.spigot.commands.parsers.*;
+import io.github.jwdeveloper.spigot.commands.patterns.FluentPatterns;
+import io.github.jwdeveloper.spigot.commands.patterns.Patterns;
 import io.github.jwdeveloper.spigot.commands.services.*;
 import io.github.jwdeveloper.spigot.commands.templates.FluentTemplateCommand;
-import io.github.jwdeveloper.spigot.commands.patterns.PatternParserService;
+import io.github.jwdeveloper.spigot.commands.patterns.PatternParser;
 import io.github.jwdeveloper.spigot.commands.patterns.PatternService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,9 +54,10 @@ public class CommandsFramework {
         builder.registerTransient(CommandBuilder.class, FluentCommandBuilder.class);
         builder.registerTransient(MessagesService.class, FluentMessageService.class);
         builder.registerTransient(TemplateCommand.class, FluentTemplateCommand.class);
+        builder.registerTransient(Patterns.class, FluentPatterns.class);
 
         builder.registerTransient(PatternService.class);
-        builder.registerSingleton(PatternParserService.class);
+        builder.registerSingleton(PatternParser.class);
         builder.registerSingleton(DisableCommandsApiListener.class);
 
 
@@ -96,7 +99,6 @@ public class CommandsFramework {
         }
         return container.find(Commands.class);
     }
-
 
 
     public static void disable() {

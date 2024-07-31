@@ -6,7 +6,7 @@ import io.github.jwdeveloper.spigot.commands.data.ActionResult;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatternParserService {
+public class PatternParser {
     private PatternTokenizer iterator;
 
     public record CommandNode(String name, List<String> namesChain, List<ArgumentNode> arguments) {

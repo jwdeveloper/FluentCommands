@@ -28,7 +28,7 @@ public class Example1Tests extends CommandsTestBase {
         Assertions.assertTrue(commandResult.isSuccess());
 
         var value = commandResult.getValue();
-        Assertions.assertEquals(1, value.getDouble(0));
+        Assertions.assertEquals(1, value.getNumber(0));
         Assertions.assertEquals("this is bad idea", value.getString(1));
     }
 

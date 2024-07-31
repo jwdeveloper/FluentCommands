@@ -25,11 +25,9 @@ public class ExpressionService {
         var result = new ArrayList<Pair<Command, String[]>>();
         var currentCommand = command;
         int startIndex = 0;
-        for (int i = 0; i < args.length; i++)
-        {
+        for (int i = 0; i < args.length; i++) {
             var currentArg = args[i];
-            if (currentCommand.hasChild(currentArg))
-            {
+            if (currentCommand.hasChild(currentArg)) {
                 var commandArgs = Arrays.copyOfRange(args, startIndex, i);
                 result.add(new Pair<>(currentCommand, commandArgs));
 
@@ -45,7 +43,7 @@ public class ExpressionService {
     public ActionResult<CommandExpression> parse(
             Command command,
             CommandSender sender,
-            String[] args) {
+            String... args) {
         var expression = new CommandExpression();
         expression.setRawValue(args);
         expression.setCommandNodes(new ArrayList<>());

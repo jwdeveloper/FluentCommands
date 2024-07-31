@@ -91,7 +91,6 @@ public class PatternTokenizer implements Iterator<String>, Iterable<String> {
 
 
         var specialSymbols = new HashSet<Character>();
-
         specialSymbols.add('/');
         specialSymbols.add('(');
         specialSymbols.add(')');

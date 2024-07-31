@@ -2,14 +2,15 @@ package io.github.jwdeveloper.spigot.commands.patterns;
 
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
-import io.github.jwdeveloper.spigot.commands.data.DisplayAttribute;
 
 public class PatternService {
 
-    private final PatternParserService parser;
+    private final PatternParser parser;
+    private final Patterns patterns;
 
-    public PatternService(PatternParserService patternExpressionService) {
+    public PatternService(PatternParser patternExpressionService, Patterns patterns) {
         this.parser = patternExpressionService;
+        this.patterns = patterns;
     }
 
     public ActionResult<CommandBuilder> getCommandBuilder(String pattern, CommandBuilder builder) {
@@ -40,26 +41,11 @@ public class PatternService {
                     .withType(argument.type());
 
 
-            if (argument.hasProperty("dd")) {
-                argumentBuilder.withDisplayAttribute(DisplayAttribute.DESCRIPTION);
-            }
-            if (argument.hasProperty("ds")) {
-                argumentBuilder.withDisplayAttribute(DisplayAttribute.SUGGESTIONS);
-            }
-            if (argument.hasProperty("dt")) {
-                argumentBuilder.withDisplayAttribute(DisplayAttribute.TYPE);
-            }
-            if (argument.hasProperty("dn")) {
-                argumentBuilder.withDisplayAttribute(DisplayAttribute.NAME);
-            }
-            if (argument.hasProperty("de")) {
-                //THISPLAY everything
-                argumentBuilder.withDisplayAttribute(DisplayAttribute.NAME);
-            }
+            for (var property : argument.properties()) {
+                var key = property.getKey();
+                var value = property.getValue();
 
-            if (argument.hasProperty("dv")) {
-                var defaultValue = argument.getProperty("dv");
-                argumentBuilder.withDefaultValue(defaultValue);
+                patterns.applyMapping(key, value, argumentBuilder);
             }
         }
         return ActionResult.success(builder);

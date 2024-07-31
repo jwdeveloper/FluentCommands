@@ -55,7 +55,6 @@ public class CommandServices {
         var event = new CommandEvent(
                 sender,
                 expressionResult.getValue(),
-                container,
                 command);
         return eventsService.invoke(command, event);
     }

@@ -12,39 +12,32 @@ import java.util.List;
 
 public final class Example extends JavaPlugin {
 
-    public static enum Flowers {
-        BIG, SMALL, MEDIUM, LEFT
-    }
-
     @Override
     public void onEnable() {
-        Commands commandsApi = CommandsFramework.enable(this);
+        Commands commands = CommandsFramework.enable(this);
+        commands.create("/hello <name:Text> <age:number> <job:Text[Miner, Fisherman, Farmer]>")
+                .onPlayerExecute(event ->
+                {
+                    event.sender().sendMessage("You called the hello command");
 
-        commandsApi.argumentTypes()
+                    var name = event.getString("name");
+                    var age = event.getNumber("age");
+                    var job = event.getString("job");
+
+                    event.sender().sendMessage("Name: " + name + " Age: " + age + " Job: " + job);
+                }).register();
+
+
+        commands.argumentTypes()
                 .create("siema")
                 .onParse(event -> 1)
                 .onSuggestion(argumentSuggestionEvent -> List.of("Heloo", "world"))
                 .register();
 
-        commandsApi.create("/join <name:Text> <age:number>")
-                .addArgument("name", builder ->
-                {
-                    builder.withDescription("This argument set name");
-                    builder.withDisplayAttribute(
-                            DisplayAttribute.DESCRIPTION,
-                            DisplayAttribute.NAME,
-                            DisplayAttribute.TYPE,
-                            DisplayAttribute.ERROR);
-                })
-                .onPlayerExecute(playerCommandEvent ->
-                {
-
-                }).register();
-
-        commandsApi.create(new PluginCommand())
+        commands.create(new PluginCommand())
                 .register();
 
-        commandsApi.argumentTypes()
+        commands.argumentTypes()
                 .create("BlockType")
                 .onParse(event ->
                 {
@@ -66,7 +59,7 @@ public final class Example extends JavaPlugin {
                 })
                 .register();
 
-        commandsApi.create("/test <radios:Number(v:$113123123$,dn)> <name:Text> <age:Number> <gender:Text>")
+        commands.create("/test <radios:Number(v:$113123123$,dn)> <name:Text> <age:Number> <gender:Text>")
                 .addArgument("gender", argumentBuilder ->
                 {
                     argumentBuilder.withDisplayAttribute(DisplayAttribute.NAME);
@@ -77,7 +70,7 @@ public final class Example extends JavaPlugin {
                 })
                 .onPlayerExecute(event ->
                 {
-                    var radious = event.getDouble(0);
+                    var radious = event.getNumber(0);
                     var name = event.getString(1);
                     System.out.println(name);
                     event.sender().sendMessage("Command invoked! " + radious + " " + name);

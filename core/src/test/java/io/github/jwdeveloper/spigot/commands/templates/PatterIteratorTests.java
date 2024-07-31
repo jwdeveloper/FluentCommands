@@ -1,7 +1,7 @@
 package io.github.jwdeveloper.spigot.commands.templates;
 
 import io.github.jwdeveloper.spigot.commands.annotations.FCommand;
-import io.github.jwdeveloper.spigot.commands.patterns.PatternParserService;
+import io.github.jwdeveloper.spigot.commands.patterns.PatternParser;
 import io.github.jwdeveloper.spigot.commands.patterns.PatternTokenizer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -46,7 +46,7 @@ public class PatterIteratorTests {
             System.out.println(out);
         }
 
-        var expression = new PatternParserService();
+        var expression = new PatternParser();
         var result = expression.resolve(input);
 
         var i = 0;

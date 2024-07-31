@@ -1,11 +1,16 @@
 package io.github.jwdeveloper.spigot.commands.services;
 
 import io.github.jwdeveloper.spigot.commands.Command;
+import io.github.jwdeveloper.spigot.commands.Commands;
+import io.github.jwdeveloper.spigot.commands.common.CommandsTestBase;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
+import io.github.jwdeveloper.spigot.commands.data.CommandEventTest;
 import io.github.jwdeveloper.spigot.commands.data.events.CommandEvent;
-import io.github.jwdeveloper.spigot.commands.functions.CommandEventAction;
+import io.github.jwdeveloper.spigot.commands.data.expressions.CommandExpression;
+import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,54 +20,56 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
-public class EventsServiceTest {
-    private EventsService eventsService;
-    private Command commandMock;
-    private CommandEvent commandEventMock;
-    private Consumer<CommandEvent<?>> actionMock;
+public class EventsServiceTest extends CommandsTestBase {
+    private EventsService events;
+    private Command command;
 
- /*   @BeforeEach
-    public void setUp() {
-        eventsService = new EventsService();
-        commandMock = mock(Command.class);
-        commandEventMock = mock(CommandEvent.class);
+    private Consumer actionMock;
+
+    @Override
+    protected void onBefore(Commands commands) {
         actionMock = mock(Consumer.class);
-
-        when(commandEventMock.sender()).thenReturn(mock(CommandSender.class));
+        command = create("/test").register();
+        events = command.container().find(EventsService.class);
     }
 
     @Test
     public void testSubscribeAddsAction() {
-        eventsService.subscribe(CommandSender.class, actionMock);
 
-        var actions = eventsService.getEventsMap().get(CommandSender.class);
+        events.subscribe(CommandSender.class, actionMock);
+
+        var actions = events.getEventsMap().get(CommandSender.class);
         assertNotNull(actions);
-        assertTrue(actions.contains(actionMock));
+        Assertions.assertTrue(actions.contains(actionMock));
     }
 
     @Test
     public void testInvokeWithSubscribedActions() {
-        eventsService.subscribe(CommandSender.class, actionMock);
+        events.subscribe(CommandSender.class, actionMock);
 
-        ActionResult<CommandEvent> result = eventsService.invoke(commandMock, commandEventMock);
+        var event = new CommandEvent(sender, mock(CommandExpression.class), command);
+        var result = events.invoke(command, event);
 
-        assertTrue(result.isSuccess());
-        verify(actionMock, times(1)).execute(commandMock, commandEventMock);
+        assertTrue(result);
+        verify(actionMock, times(1)).accept(event);
     }
 
     @Test
     public void testInvokeWithoutSubscribedActions() {
-        ActionResult<CommandEvent> result = eventsService.invoke(commandMock, commandEventMock);
 
-        assertTrue(result.isSuccess());
+        var event = new CommandEvent(sender, mock(CommandExpression.class), command);
+        var result = events.invoke(command, event);
+
+        assertTrue(result);
     }
 
+    /*
     @Test
     public void testInvokeCatchesExceptionFromAction() throws Exception {
         doThrow(new RuntimeException("Action error")).when(actionMock).execute(any(), any());
-        eventsService.subscribe(CommandSender.class, actionMock);
+        events.subscribe(CommandSender.class, actionMock);
 
-        ActionResult<CommandEvent> result = eventsService.invoke(commandMock, commandEventMock);
+        ActionResult<CommandEvent> result = events.invoke(commandMock, commandEventMock);
 
         assertFalse(result.isSuccess());
         assertEquals("An error occurred while executing actions: Action error", result.getMessage());
@@ -73,9 +80,9 @@ public class EventsServiceTest {
         Player playerMock = mock(Player.class);
         when(commandEventMock.sender()).thenReturn(playerMock);
 
-        eventsService.subscribe(Player.class, actionMock);
+        events.subscribe(Player.class, actionMock);
 
-        ActionResult<CommandEvent> result = eventsService.invoke(commandMock, commandEventMock);
+        ActionResult<CommandEvent> result = events.invoke(commandMock, commandEventMock);
 
         assertTrue(result.isSuccess());
         verify(actionMock, times(1)).execute(commandMock, commandEventMock);
@@ -86,9 +93,9 @@ public class EventsServiceTest {
         CommandSender senderMock = mock(CommandSender.class);
         when(commandEventMock.sender()).thenReturn(senderMock);
 
-        eventsService.subscribe(CommandSender.class, actionMock);
+        events.subscribe(CommandSender.class, actionMock);
 
-        ActionResult<CommandEvent> result = eventsService.invoke(commandMock, commandEventMock);
+        ActionResult<CommandEvent> result = events.invoke(commandMock, commandEventMock);
 
         assertTrue(result.isSuccess());
         verify(actionMock, times(1)).execute(commandMock, commandEventMock);
