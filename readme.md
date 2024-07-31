@@ -34,8 +34,12 @@ Join the support [discord](https://discord.gg/2hu6fPPeF7) and visit the `#progra
 
 ## Getting started
 1. Install the package <a href="https://www.nuget.org/packages/InstaLiveDotNet/" target="blank" ><img src="https://img.shields.io/nuget/v/SoftCircuits.Silk.svg?style=flat-square" width="100px"  height="25px"></a>
-```java
-<PackageReference Include="InstaLiveDotNet" Version="1.0.0" />
+```xml
+<dependency>
+	    <groupId>com.github.jwdeveloper.spigot.commands</groupId>
+	    <artifactId>CommandsFramework</artifactId>
+	    <version>1.0.0</version>
+</dependency>
 ```
 <br>
 </br>
