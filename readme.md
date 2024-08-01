@@ -31,12 +31,6 @@ See the [documentation](https://jwdeveloper.github.io/FluentCommands/) to see mo
 
 Join the support [discord](https://discord.gg/2hu6fPPeF7) and visit the `#programming` channel for questions, contributions and ideas. Feel free to make pull requests with missing/new features, fixes, etc
 
-<div align="center" >
-   <img align="center" src="https://github.com/user-attachments/assets/1248cd52-4d26-4a38-a764-df005a5d15bd"  >
-</div>
-
-
-
 ## Getting started
 1. Install the dependencie 
 ```xml
@@ -48,7 +42,6 @@ Join the support [discord](https://discord.gg/2hu6fPPeF7) and visit the `#progra
 </dependency>
 ```
 <br>
-</br>
 
 2. Create your first command
 ```java
@@ -59,35 +52,28 @@ public final class Example extends JavaPlugin {
     public void onEnable() {
         CommandsApi commandsApi = CommandsFramework.enable(this);
 
-        commandsApi.create("hello-world")
-                //Properties
-                .withPermissions("use.hello.world")
-                .withDescription("This command say hello world to player")
-
-                //Arguments
-                .addTextArgument("animal")
-                .addNumberArgument("number-of-people")
-                .addPlayerArgument("main-player")
-
-                //Events
-                .onPlayerExecute((command, event) ->
+           commands.create("/hello <name:Text> <age:number> <job:Text[Miner, Fisherman, Farmer]>")
+                .onPlayerExecute(event ->
                 {
-                    var sender = event.sender();
-                    var player = event.argumentPlayer(0);
-                    var size = event.argumentDouble(1);
-                })
-                .onServerExecute((command, event) ->
-                {
-                    event.sender().sendMessage("This command can be only use by players!");
-                })
-                .register();
+                    event.sender().sendMessage("You called the hello command");
+
+                    var name = event.getString("name");
+                    var age = event.getNumber("age");
+                    var job = event.getString("job");
+
+                    event.sender().sendMessage("Name: " + name + " Age: " + age + " Job: " + job);
+                }).register();
     }
 }
 ```
 
+<br>
+
 3. Call the command in game!
 
-`/hello-world john 12 Steave`
+<div align="center" >
+   <img align="center" src="https://github.com/user-attachments/assets/1248cd52-4d26-4a38-a764-df005a5d15bd"  >
+</div>
 
 
 ## Contributing
