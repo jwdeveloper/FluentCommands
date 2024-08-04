@@ -12,6 +12,8 @@ import io.github.jwdeveloper.spigot.commands.listeners.DisableCommandsApiListene
 import io.github.jwdeveloper.spigot.commands.parsers.*;
 import io.github.jwdeveloper.spigot.commands.patterns.FluentPatterns;
 import io.github.jwdeveloper.spigot.commands.patterns.Patterns;
+import io.github.jwdeveloper.spigot.commands.patterns.mappers.ParsingMapper;
+import io.github.jwdeveloper.spigot.commands.patterns.mappers.SuggestionsMapper;
 import io.github.jwdeveloper.spigot.commands.services.*;
 import io.github.jwdeveloper.spigot.commands.templates.FluentTemplateCommand;
 import io.github.jwdeveloper.spigot.commands.patterns.PatternParser;
@@ -109,21 +111,22 @@ public class CommandsFramework {
             argumentTypesRegistry.register(typesContainer.find(e));
         });
 
-
         var patterns = container.find(Patterns.class);
-        patterns.mapProperty("dn", (value, builder1) -> builder1.withDisplayName());
-        patterns.mapProperty("dt", (value, builder1) -> builder1.withDisplayType());
-        patterns.mapProperty("dd", (value, builder1) -> builder1.withDisplayDescription());
-        patterns.mapProperty("de", (value, builder1) -> builder1.withDisplayError());
-        patterns.mapProperty("ds", (value, builder1) -> builder1.withDisplaySuggestions());
-        patterns.mapProperty("d-", (value, builder1) -> builder1.withDisplayNone());
-        patterns.mapProperty("da", (value, builder1) -> builder1.withDisplayAttribute(DisplayAttribute.values()));
+        patterns.mapProperty("dn", (svalue, builder1, s) -> builder1.withDisplayName());
+        patterns.mapProperty("dt", (value, builder1, s) -> builder1.withDisplayType());
+        patterns.mapProperty("dd", (value, builder1, s) -> builder1.withDisplayDescription());
+        patterns.mapProperty("de", (value, builder1, s) -> builder1.withDisplayError());
+        patterns.mapProperty("ds", (value, builder1, s) -> builder1.withDisplaySuggestions());
+        patterns.mapProperty("d-", (value, builder1, s) -> builder1.withDisplayNone());
+        patterns.mapProperty("da", (value, builder1, s) -> builder1.withDisplayAttribute(DisplayAttribute.values()));
 
+        patterns.mapProperty("dv", (value, builder1, source) -> builder1.withDefaultValue(value));
+        patterns.mapProperty("d", (value, builder1, s) -> builder1.withDescription(value));
+        patterns.mapProperty("r", (value, builder1, s) -> builder1.withRequired());
 
-        patterns.mapProperty("d", (value, builder1) -> builder1.withDescription(value));
-        patterns.mapProperty("n", (value, builder1) -> builder1.withName(value));
-        patterns.mapProperty("t", (value, builder1) -> builder1.withType(value));
-        patterns.mapProperty("r", (value, builder1) -> builder1.withRequired());
+        patterns.mapProperty("s", new ParsingMapper(container));
+        patterns.mapProperty("p", new SuggestionsMapper(container));
+
 
         var listener = container.find(DisableCommandsApiListener.class);
         Bukkit.getPluginManager().registerEvents(listener, plugin);

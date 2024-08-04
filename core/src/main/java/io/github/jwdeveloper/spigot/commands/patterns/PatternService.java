@@ -1,7 +1,16 @@
 package io.github.jwdeveloper.spigot.commands.patterns;
 
+import io.github.jwdeveloper.dependance.Dependance;
 import io.github.jwdeveloper.spigot.commands.builder.CommandBuilder;
 import io.github.jwdeveloper.spigot.commands.data.ActionResult;
+import io.github.jwdeveloper.spigot.commands.data.events.ArgumentSuggestionEvent;
+import io.github.jwdeveloper.spigot.commands.functions.ArgumentSuggestions;
+import org.checkerframework.checker.units.qual.A;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PatternService {
 
@@ -13,7 +22,7 @@ public class PatternService {
         this.patterns = patterns;
     }
 
-    public ActionResult<CommandBuilder> getCommandBuilder(String pattern, CommandBuilder builder) {
+    public ActionResult<CommandBuilder> getCommandBuilder(Object source, String pattern, CommandBuilder builder) {
         var result = parser.resolve(pattern);
         if (result.isFailed()) {
             return result.cast();
@@ -35,21 +44,50 @@ public class PatternService {
             var argumentBuilder = builder.argument(argument.name());
 
             argumentBuilder
-                    .withSuggestions(argument.suggestions())
                     .withDefaultValue(argument.defaultValue())
                     .withRequired(argument.required())
                     .withType(argument.type());
 
+            if (!argument.suggestions().isEmpty()) {
+                argumentBuilder.withSuggestions(argument.suggestions());
+            }
 
             for (var property : argument.properties()) {
                 var key = property.getKey();
                 var value = property.getValue();
 
-                patterns.applyMapping(key, value, argumentBuilder);
+                patterns.applyMapping(source, key, value, argumentBuilder);
             }
         }
         return ActionResult.success(builder);
     }
 
+    private ArgumentSuggestions addSuggestionMethod(Object source,
+                                                    String methodName) {
+        var type = source.getClass();
+        Method method = null;
+        try {
+            method = type.getDeclaredMethod(methodName.replace("()", ""));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        Method finalMethod = method;
+        return event -> {
+            try {
+                var parameters = event.command().container().resolveParameters(finalMethod);
+                var result = finalMethod.invoke(parameters);
+                if (result instanceof String[] args) {
+                    return ActionResult.success(Arrays.stream(args).toList());
+                }
+
+                var res = new ArrayList<String>();
+                res.add(result.toString());
+                return ActionResult.success(res);
+            } catch (Exception e) {
+                return ActionResult.failed(e.getMessage());
+            }
+        };
+    }
 
 }

@@ -17,12 +17,15 @@ public class FluentCommands implements Commands {
     private final TemplateCommand commandsTemplate;
     private final ArgumentTypes argumentTypesRegistry;
     private final PatternService patternService;
+    private final Patterns patterns;
 
     public FluentCommands(CommandsRegistry commandsRegistry,
                           DependanceContainer container,
                           ArgumentTypes argumentTypesRegistry,
                           TemplateCommand commandsTemplate,
-                          PatternService patternService) {
+                          PatternService patternService,
+                          Patterns patterns) {
+        this.patterns = patterns;
         this.commandsRegistry = commandsRegistry;
         this.container = container;
         this.commandsTemplate = commandsTemplate;
@@ -31,10 +34,9 @@ public class FluentCommands implements Commands {
     }
 
 
-
     @Override
     public Patterns patterns() {
-        return null;
+        return patterns;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class FluentCommands implements Commands {
 
     @Override
     public CommandBuilder create(String pattern) {
-        var result = patternService.getCommandBuilder(pattern, create());
+        var result = patternService.getCommandBuilder(this, pattern, create());
         if (result.isFailed()) {
             throw new RuntimeException(result.getMessage());
         }

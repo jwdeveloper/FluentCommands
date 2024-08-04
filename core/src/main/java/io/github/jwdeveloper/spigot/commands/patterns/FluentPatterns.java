@@ -18,12 +18,19 @@ public class FluentPatterns implements Patterns {
 
 
     @Override
-    public boolean applyMapping(String key, String value, ArgumentBuilder argumentBuilder) {
+    public boolean applyMapping(Object source, String key, String value, ArgumentBuilder argumentBuilder) {
         if (!propertyMappers.containsKey(key)) {
             return false;
         }
         var mapper = propertyMappers.get(key);
-        mapper.map(value, argumentBuilder);
-        return true;
+        try {
+            mapper.map(value, argumentBuilder, source);
+
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

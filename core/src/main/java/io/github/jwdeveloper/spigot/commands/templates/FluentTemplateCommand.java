@@ -38,7 +38,7 @@ public class FluentTemplateCommand implements TemplateCommand {
         var model = getModel(template);
         var templateType = template.getClass();
         if (templateType.isAnnotationPresent(FCommand.class)) {
-            decorateBuilder(templateType.getAnnotation(FCommand.class), builder);
+            decorateBuilder(template, templateType.getAnnotation(FCommand.class), builder);
         }
 
         for (var method : model.getCommandMethods()) {
@@ -54,7 +54,7 @@ public class FluentTemplateCommand implements TemplateCommand {
         return builder;
     }
 
-    private CommandBuilder decorateBuilder(FCommand fCommand, CommandBuilder builder) {
+    private CommandBuilder decorateBuilder(Object template, FCommand fCommand, CommandBuilder builder) {
         var pattern = fCommand.pattern();
         var name = fCommand.name();
 
@@ -64,7 +64,7 @@ public class FluentTemplateCommand implements TemplateCommand {
         }
 
         if (!pattern.isEmpty()) {
-            var patternResult = patternService.getCommandBuilder(pattern, builder);
+            var patternResult = patternService.getCommandBuilder(template, pattern, builder);
             if (patternResult.isFailed()) {
                 throw new RuntimeException(patternResult.getMessage());
             }
@@ -125,7 +125,7 @@ public class FluentTemplateCommand implements TemplateCommand {
     private void handleCommandMethod(Object target, Method method, CommandBuilder builder) {
         if (method.isAnnotationPresent(FCommand.class)) {
             var annotation = method.getAnnotation(FCommand.class);
-            builder = decorateBuilder(annotation, builder);
+            builder = decorateBuilder(target, annotation, builder);
         }
 
         var senderTypeOptional = Arrays.stream(method.getParameterTypes())

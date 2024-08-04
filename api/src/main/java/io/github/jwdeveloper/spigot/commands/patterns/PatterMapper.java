@@ -6,5 +6,5 @@ import java.util.function.BiConsumer;
 
 public interface PatterMapper {
 
-    void map(String value, ArgumentBuilder builder);
+    void map(String value, ArgumentBuilder builder, Object source) throws Exception;
 }
